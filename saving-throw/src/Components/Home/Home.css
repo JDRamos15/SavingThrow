@@ -1,0 +1,15 @@
+.Background{
+background-image: url("../../Images/DnD7.jpg");
+background-position: center;
+background-size: cover;
+min-height: 100vh;
+}
+
+.Title{
+    padding-top: 80px;
+    color: rgb(15, 0, 14);
+    font-family: Merriweather;
+    font-weight: bold;
+    font-size: 64px;
+    text-align: center;
+}
