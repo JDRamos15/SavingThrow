@@ -24,10 +24,6 @@ def create_app(config_file='settings.py'):
     migrate = Migrate(app, db)
     return app
 
-@app.route("/", methods=['GET'])
-def home():
-    return make_response(jsonify("Success", 201))
-
 @app.route("/create-user", methods=['POST'])
 def createUser():
     if request.method == 'GET':
@@ -37,6 +33,7 @@ def createUser():
         checkEmail = userModel.query.filter_by(uemail=body['email']).first()
         checkUserName = userModel.query.filter_by(uusername=body['username']).first()
         if checkEmail is None and checkUserName is None:
+            print(body)
             ufirst_name = body['firstName']
             ulast_name = body['lastName']
             uemail = body['email']
