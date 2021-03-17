@@ -6,21 +6,23 @@ from Models.User import db, userModel
 import datetime
 # testing, must install in backend env
 import flask_praetorian
-guard = flask_praetorian.Praetorian()
 
-app = Flask(__name__)
+def create_app(config_file='settings.py'):
+    guard = flask_praetorian.Praetorian()
+    app = Flask(__name__)
 
-app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.from_pyfile(config_file)
+    #app.config.from_object(os.environ['APP_SETTINGS'])
+    #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-#testing
-app.config['SECRET_KEY'] = 'top secret'
-app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
+    #testing
+    app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
+    app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
- 
-db.init_app(app)
-migrate = Migrate(app, db)
+    
+    db.init_app(app)
+    migrate = Migrate(app, db)
+    return app
 
 
 @app.route("/create-user", methods=['POST'])
@@ -42,7 +44,7 @@ def createUser():
             db.session.commit()
     
             return make_response(jsonify("Success", 201))
-      
+    
             
         return make_response(jsonify("Email or Username already is use", 404))
 
@@ -51,4 +53,4 @@ def createUser():
 
     
 if __name__ == '__main__':
-    app.run()
+    create_app().run()
