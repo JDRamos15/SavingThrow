@@ -24,7 +24,7 @@ def create_app(config_file='settings.py'):
     migrate = Migrate(app, db)
     return app
 
-@app.route("/",methods=['GET'])
+@app.route("/", methods=['GET'])
 def home():
     return "Hello"
 
