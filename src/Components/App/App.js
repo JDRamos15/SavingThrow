@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Home} />
+        <Route exact path="/" component={CreateUser} />
         <Route exact path="/create-user" component={CreateUser} />
         {/*<Route exact path="/login" component={LogIn} />
         <Route exact path="/profile:email" component={Profike} />*/}
