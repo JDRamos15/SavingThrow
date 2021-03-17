@@ -26,7 +26,7 @@ def create_app(config_file='settings.py'):
 
 @app.route("/", methods=['GET'])
 def home():
-    return "Hello"
+    return make_response(jsonify("Success", 201))
 
 @app.route("/create-user", methods=['POST'])
 def createUser():
