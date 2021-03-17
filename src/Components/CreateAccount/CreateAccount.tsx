@@ -49,7 +49,7 @@ export default function CreateAccount(){
             });
             const data = await response.json();
             if (data[1] = 201)
-                console.log(data.status, "Server Data");
+                console.log(data[0], ":Server Data");
             else
                 console.log("Wrong");
             // if (data.errors){
