@@ -2,7 +2,8 @@ import os
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from Models.User import db, userModel
+from extensions import db
+from Models.User import userModel
 import datetime
 # testing, must install in backend env
 import flask_praetorian
@@ -23,6 +24,9 @@ def create_app(config_file='settings.py'):
     db.init_app(app)
     migrate = Migrate(app, db)
     return app
+
+# app = create_app()
+
 
 @app.route("/create-user", methods=['POST'])
 def createUser():
