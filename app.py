@@ -37,6 +37,7 @@ def createUser():
         return "Login via the login Form"
     if request.method == 'POST':        
         body = request.get_json()
+        print(body)
         checkEmail = userModel.query.filter_by(uemail=body['email']).first()
         checkUserName = userModel.query.filter_by(uusername=body['username']).first()
         if checkEmail is None and checkUserName is None:
