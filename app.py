@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from extensions import db
 from Models.User import userModel
+from commands import create_tables
 import datetime
 # testing, must install in backend env
 import flask_praetorian
@@ -21,7 +22,8 @@ def create_app(config_file='settings.py'):
     app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
     app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
-    
+    app.cli.add_command(create_tables)
+
     db.init_app(app)
     migrate = Migrate(app, db)
     return app
