@@ -28,7 +28,7 @@ def create_app(config_file='settings.py'):
     migrate = Migrate(app, db)
     return app
 
-app = create_app()
+#app = create_app()
 
 
 @app.route("/create-user", methods=['POST'])
