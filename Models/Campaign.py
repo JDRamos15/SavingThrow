@@ -1,4 +1,4 @@
-from extensions import db
+from SavingThrow.extensions import db
  
  
 class campaignModel(db.Model):

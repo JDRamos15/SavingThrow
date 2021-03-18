@@ -2,9 +2,9 @@ import os
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from extensions import db
-from Models.User import userModel
-from commands import create_tables
+from SavingThrow.extensions import db
+from SavingThrow.Models.User import userModel
+from SavingThrow.commands import create_tables
 import datetime
 # testing, must install in backend env
 import flask_praetorian
@@ -19,13 +19,13 @@ def create_app(config_file='settings.py'):
     #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     #testing
-    app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-    app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
-
-    app.cli.add_command(create_tables)
+    # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
+    # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
     db.init_app(app)
+
     migrate = Migrate(app, db)
+    app.cli.add_command(create_tables)
     return app
 
 #app = create_app()
