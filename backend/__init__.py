@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from SavingThrow.extensions import db
+from extensions import db
 from Models.User import userModel
 from commands import create_tables
 import datetime

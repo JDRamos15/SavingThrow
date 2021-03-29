@@ -1,3 +1,3 @@
-from SavingThrow import create_app
+from backend import create_app
 
 app = create_app()
