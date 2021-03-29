@@ -32,7 +32,7 @@ export default function CreateAccount(){
             // }
             console.log(formData, "formData");
             
-            const response = await fetch("/create-user", {
+            const response = await fetch("routes/auth/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -48,7 +48,8 @@ export default function CreateAccount(){
                 })
             });
             const data = await response.json();
-            if (data[1] = 201)
+            console.log(data);
+            if (data.status == 201)
                 console.log(data[0], ":Server Data");
             else
                 console.log("Wrong");
