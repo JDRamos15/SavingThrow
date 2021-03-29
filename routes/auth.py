@@ -3,10 +3,10 @@ from SavingThrow.extensions import db
 from flask import Flask, request, jsonify, make_response
 
 
-@auth.route("/create", methods=['POST'])
+@auth.route("/create", methods=['GET','POST'])
 def createUser():
     if request.method == 'GET':
-        return "Login via the login Form"
+        return make_response(jsonify("Login via the login Form"))
     if request.method == 'POST':        
         body = request.get_json()
         checkEmail = userModel.query.filter_by(uemail=body['email']).first()
