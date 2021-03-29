@@ -1,3 +1,3 @@
-from SavingThrow.app import create_app
+from SavingThrow import create_app
 
 app = create_app()

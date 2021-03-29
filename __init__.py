@@ -3,9 +3,11 @@ from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from SavingThrow.extensions import db
-from SavingThrow.Models.User import userModel
-from SavingThrow.commands import create_tables
+from Models.User import userModel
+from commands import create_tables
 import datetime
+#testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
+from flask_cors import CORS
 # testing, must install in backend env
 import flask_praetorian
 
@@ -23,12 +25,13 @@ def create_app(config_file='settings.py'):
     # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
     db.init_app(app)
+    CORS(app)
 
     migrate = Migrate(app, db)
     app.cli.add_command(create_tables)
     return app
 
-#app = create_app()
+# app = create_app()
 
 
 # @app.route("/create-user", methods=['POST'])
@@ -58,5 +61,8 @@ def create_app(config_file='settings.py'):
 # def getUser():
 
     
-if __name__ == '__main__':
-    create_app().run()
+# if __name__ == '__main__':
+#     app.run()
+
+
+#ORIGINALLY app.py

@@ -1,4 +1,4 @@
-from SavingThrow.extensions import db
+from extensions import db
   
 class userModel(db.Model):
     __tablename__ = 'users'

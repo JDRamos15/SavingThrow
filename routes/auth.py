@@ -1,5 +1,5 @@
-from SavingThrow.Models.User import userModel
-from SavingThrow.extensions import db
+from Models.User import userModel
+from extensions import db
 from flask import Flask, request, jsonify, make_response
 
 
