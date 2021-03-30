@@ -33,28 +33,28 @@ app.cli.add_command(create_tables)
 def hello_world():
     return 'Hello World!'
 
-# @app.route("/create-user", methods=['POST'])
-# def createUser():
-#     if request.method == 'GET':
-#         return "Login via the login Form"
-#     if request.method == 'POST':        
-#         body = request.get_json()
-#         checkEmail = userModel.query.filter_by(uemail=body['email']).first()
-#         checkUserName = userModel.query.filter_by(uusername=body['username']).first()
-#         if checkEmail is None and checkUserName is None:
-#             ufirst_name = body['firstName']
-#             ulast_name = body['lastName']
-#             uemail = body['email']
-#             upassword = body['password']
-#             uusername = body['username']
-#             new_user = userModel(ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
-#             db.session.add(new_user)
-#             db.session.commit()
+@app.route("/create", methods=['POST'])
+def createUser():
+    if request.method == 'GET':
+        return make_response(jsonify("Login via the login Form"))
+    if request.method == 'POST':        
+        body = request.get_json()
+        checkEmail = userModel.query.filter_by(uemail=body['email']).first()
+        checkUserName = userModel.query.filter_by(uusername=body['username']).first()
+        if checkEmail is None and checkUserName is None:
+            ufirst_name = body['firstName']
+            ulast_name = body['lastName']
+            uemail = body['email']
+            upassword = body['password']
+            uusername = body['username']
+            new_user = userModel(ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
+            db.session.add(new_user)
+            db.session.commit()
     
-#             return make_response(jsonify("Success", 201))
+            return make_response(jsonify("Success"),status=201)
     
             
-#         return make_response(jsonify("Email or Username already is use", 404))
+        return make_response(jsonify("Email or Username already is use"), status=404)
 
 # @app.route("/get-user", methods=['GET'])
 # def getUser():
