@@ -15,7 +15,7 @@ guard = flask_praetorian.Praetorian()
 
 app = Flask(__name__)
 
-app.config.from_pyfile('../settings.py')
+app.config.from_pyfile('settings.py')
 #app.config.from_object(os.environ['APP_SETTINGS'])
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

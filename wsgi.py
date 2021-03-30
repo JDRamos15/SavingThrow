@@ -1,3 +1,3 @@
-from backend import app
+from backend.app import app
 
 prog = app
