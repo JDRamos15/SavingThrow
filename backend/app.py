@@ -13,25 +13,22 @@ import flask_praetorian
 
 guard = flask_praetorian.Praetorian()
 
-def create_app(config_file='settings.py'):
-    app = Flask(__name__)
+app = Flask(__name__)
 
-    app.config.from_pyfile(config_file)
-    #app.config.from_object(os.environ['APP_SETTINGS'])
-    #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_pyfile('../settings.py')
+#app.config.from_object(os.environ['APP_SETTINGS'])
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    #testing
-    # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-    # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
+#testing
+# app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
+# app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
-    db.init_app(app)
-    CORS(app)
+db.init_app(app)
+CORS(app)
 
-    migrate = Migrate(app, db)
-    app.cli.add_command(create_tables)
-    return app
+migrate = Migrate(app, db)
+app.cli.add_command(create_tables)
 
-# app = create_app()
 
 
 # @app.route("/create-user", methods=['POST'])
@@ -61,8 +58,7 @@ def create_app(config_file='settings.py'):
 # def getUser():
 
     
-# if __name__ == '__main__':
-#     app.run()
+if __name__ == '__main__':
+    app.run()
 
 
-#ORIGINALLY app.py
