@@ -29,7 +29,9 @@ CORS(app)
 migrate = Migrate(app, db)
 app.cli.add_command(create_tables)
 
-
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
 
 # @app.route("/create-user", methods=['POST'])
 # def createUser():
