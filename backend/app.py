@@ -16,8 +16,8 @@ guard = flask_praetorian.Praetorian()
 app = Flask(__name__)
 
 app.config.from_pyfile('settings.py')
-#app.config.from_object(os.environ['APP_SETTINGS'])
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #testing
 # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
@@ -47,10 +47,10 @@ def createUser():
             db.session.add(new_user)
             db.session.commit()
     
-            return make_response(jsonify("Success"),status=201)
+            return jsonify("Success"), 201
     
             
-        return make_response(jsonify("Email or Username already is use"), status=400)
+        return jsonify("Email or Username already is use"), 400
 
 # @app.route("/get-user", methods=['GET'])
 # def getUser():

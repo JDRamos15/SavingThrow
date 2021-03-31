@@ -49,8 +49,8 @@ export default function CreateAccount(){
             });
             const data = await response.json();
             console.log(data);
-            if (data.status == 201)
-                console.log(data[0], ":Server Data");
+            if (data == "Success")
+                console.log(data, ":Server Data");
             else
                 console.log("Wrong");
             // if (data.errors){
