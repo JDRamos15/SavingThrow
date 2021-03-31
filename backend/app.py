@@ -17,7 +17,6 @@ app = Flask(__name__)
 
 app.config.from_pyfile('settings.py')
 # app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #testing
 # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
