@@ -24,16 +24,12 @@ app.config.from_pyfile('settings.py')
 # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
 db.init_app(app)
-CORS(app)
+# CORS(app)
 
 migrate = Migrate(app, db)
 app.cli.add_command(create_tables)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-@app.route("/create", methods=['POST'])
+@app.route("/create-user", methods=['GET','POST'])
 def createUser():
     if request.method == 'GET':
         return make_response(jsonify("Login via the login Form"))
@@ -54,7 +50,7 @@ def createUser():
             return make_response(jsonify("Success"),status=201)
     
             
-        return make_response(jsonify("Email or Username already is use"), status=404)
+        return make_response(jsonify("Email or Username already is use"), status=400)
 
 # @app.route("/get-user", methods=['GET'])
 # def getUser():

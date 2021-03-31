@@ -3,11 +3,11 @@ from extensions import db
 from flask import Flask, request, jsonify, make_response
 
 
-@auth.route("/create", methods=['GET','POST'])
+@user.route("/create", methods=['GET','POST'])
 def createUser():
     if request.method == 'GET':
         return make_response(jsonify("Login via the login Form"))
-    if request.method == 'POST':        
+    if request.method == 'POST': 
         body = request.get_json()
         checkEmail = userModel.query.filter_by(uemail=body['email']).first()
         checkUserName = userModel.query.filter_by(uusername=body['username']).first()
