@@ -32,7 +32,7 @@ export default function CreateAccount(){
             // }
             console.log(formData, "formData");
             
-            const response = await fetch("/create-user", {
+            const response = await fetch("api/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

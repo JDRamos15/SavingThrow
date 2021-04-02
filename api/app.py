@@ -13,7 +13,7 @@ import flask_praetorian
 
 guard = flask_praetorian.Praetorian()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../build', static_url_path='/')
 
 app.config.from_pyfile('settings.py')
 # app.config.from_object(os.environ['APP_SETTINGS'])
@@ -28,10 +28,18 @@ db.init_app(app)
 migrate = Migrate(app, db)
 app.cli.add_command(create_tables)
 
-@app.route("/create-user", methods=['GET','POST'])
+# @app.route("/")
+# def home():
+#         return app.send_static_file('Home.js')
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+    
+@app.route("/api/create", methods=['GET','POST'])
 def createUser():
     if request.method == 'GET':
-        return make_response(jsonify("Login via the login Form"))
+        return jsonify("Login via the login Form")
     if request.method == 'POST':        
         body = request.get_json()
         checkEmail = userModel.query.filter_by(uemail=body['email']).first()
