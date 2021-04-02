@@ -1,3 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+database = SQLAlchemy()
+
+def getDB():
+    return database
