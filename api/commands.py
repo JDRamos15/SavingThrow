@@ -1,7 +1,7 @@
 import click
 from flask.cli import with_appcontext
 
-from extensions import db
+from extension import db
 from Models.User import userModel
 from Models.Campaign import campaignModel
 

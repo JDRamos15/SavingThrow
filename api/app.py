@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from extensions import getDB
+from extension import db
 from Models.User import userModel
 from commands import create_tables
 import datetime
@@ -16,7 +16,6 @@ guard = flask_praetorian.Praetorian()
 app = Flask(__name__, static_folder='../build', static_url_path='/')
 
 app.config.from_object('config.DevelopmentConfig')
-db = getDB()
 # app.config.from_object(os.environ['APP_SETTINGS'])
 
 #testing
