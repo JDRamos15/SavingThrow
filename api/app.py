@@ -26,7 +26,6 @@ db.init_app(app)
 # CORS(app)
 
 migrate = Migrate(app, db)
-
 app.cli.add_command(create_tables)
 
 # @app.route("/")
