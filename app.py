@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from SavingThrow.extensions import db
 from SavingThrow.Models.User import userModel
@@ -31,7 +32,7 @@ def create_app(config_file='settings.py'):
 #app = create_app()
 
 
-@app.route("/create-user", methods=['POST'])
+@app.route("/api/create-user", methods=['POST'])
 def createUser():
     if request.method == 'GET':
         return "Login via the login Form"
@@ -55,9 +56,21 @@ def createUser():
             
         return make_response(jsonify("Email or Username already is use", 404))
 
-# @app.route("/get-user", methods=['GET'])
-# def getUser():
+@app.route("/api/create-game", methods=['POST'])
+def createGame():
+    if request.method == 'POST':        
+        body = request.get_json()
+        print(body)
+        name = body['name']
+        dm_uid = body['dm_uid']
+        description = body['description']
+        start_date = body['start_date']
+        date = datetime.now()
+        new_campaign = userModel(ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
+        db.session.add(new_user)
+        db.session.commit()
 
+        return make_response(jsonify("Success", 201))
     
 if __name__ == '__main__':
     create_app().run()

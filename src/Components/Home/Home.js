@@ -9,7 +9,7 @@ class Home extends React.Component {
       <React.Fragment>
 
         <div className="Background">
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="Title">
             Saving Throw
           </div>
