@@ -1,5 +1,5 @@
-# from .Models.User import userModel
-# from .extension import db
+# from ../.Models.User import userModel
+# from ../.extension import db
 # from flask import Flask, request, jsonify, make_response
 
 
