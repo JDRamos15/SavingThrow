@@ -32,10 +32,13 @@ app.cli.add_command(create_tables)
 # def home():
 #         return app.send_static_file('Home.js')
 
+def getApp():
+    return app
+
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
-    
+
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
     if request.method == 'GET':
