@@ -15,7 +15,7 @@ guard = flask_praetorian.Praetorian()
 
 app = Flask(__name__, static_folder='../build', static_url_path='/')
 
-app.config.from_pyfile('settings.py')
+app.config.from_object('config.DevelopmentConfig')
 # app.config.from_object(os.environ['APP_SETTINGS'])
 
 #testing
@@ -35,7 +35,7 @@ app.cli.add_command(create_tables)
 def getApp():
     return app
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
 
