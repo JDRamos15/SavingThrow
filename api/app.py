@@ -91,7 +91,7 @@ def login():
         if not body or not uusername or not upassword:
             return jsonify("Account does not exist", 404)
 
-        user = userModel.query.filter_by(uusername = uusername).first()      
+        user = userModel.query.filter_by(uusername=body['username']).first()      
 
         if user:
             check = user.upassword.replace(" ", "")
@@ -101,7 +101,7 @@ def login():
                 # return redirect(url_for('profile'))
                 return jsonify({'token' : token.decode('UTF-8')})
             else:
-                return jsonify("Incorrect email or password", 404)
+                return jsonify("Incorrect email or password", upassword, check), 404
         else:
             return jsonify("Account does not exist", 404)
 
