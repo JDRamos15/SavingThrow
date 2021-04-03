@@ -6,7 +6,7 @@ class userModel(db.Model):
     __tablename__ = 'users'
  
     uid = db.Column(db.Integer, primary_key = True)
-    publicId = db.Column(db.String)0
+    publicId = db.Column(db.String())
     ufirst_name = db.Column(db.String())
     ulast_name = db.Column(db.String())
     uemail = db.Column(db.String())
