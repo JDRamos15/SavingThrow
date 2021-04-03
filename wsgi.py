@@ -1,5 +1,5 @@
 import os
-from api.app import getApp
+from api.app import app
 
-os.environ['DATABASE_URL']
-app = getApp()
+if __name__ == "__main__":
+    app.run()
