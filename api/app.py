@@ -15,7 +15,10 @@ guard = flask_praetorian.Praetorian()
 
 app = Flask(__name__, static_folder='../build', static_url_path='/')
 
-app.config.from_object('.config.DevelopmentConfig')
+# app.config.from_object('config.ProductionConfig')
+
+#use for heroku
+app.config.from_pyfile('settings.py')
 # app.config.from_object(os.environ['APP_SETTINGS'])
 
 #testing
