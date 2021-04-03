@@ -1,48 +1,53 @@
 import os
 import datetime
-from .Models.User import userModel
-from .commands import create_tables
-from .extension import db
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+# UNCOMMENT FOR HEROKU
+from .Models.User import userModel
+from .commands import create_tables
+from .extension import db
+
+# from Models.User import userModel
+# from commands import create_tables
+# from extension import db
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
 # testing, must install in backend env
 import flask_praetorian
 
-guard = flask_praetorian.Praetorian()
+def create_app():
+    guard = flask_praetorian.Praetorian()
 
-app = Flask(__name__, static_folder='../build', static_url_path='/')
+    app = Flask(__name__, static_folder='build', static_url_path='/')
 
-# app.config.from_object('config.ProductionConfig')
+    # app.config.from_object('config.ProductionConfig')
 
-#use for heroku
-app.config.from_pyfile('settings.py')
-# app.config.from_object(os.environ['APP_SETTINGS'])
+    #use for heroku
+    app.config.from_pyfile('settings.py')
+    # app.config.from_object(os.environ['APP_SETTINGS'])
 
-#testing
-# app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-# app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
+    #testing
+    # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
+    # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
-db.init_app(app)
-# CORS(app)
+    db.init_app(app)
+    # CORS(app)
 
-migrate = Migrate(app, db)
-app.cli.add_command(create_tables)
+    migrate = Migrate(app, db)
+    app.cli.add_command(create_tables)
 
-# @app.route("/")
-# def home():
-#         return app.send_static_file('Home.js')
+    # @app.route("/")
+    # def home():
+    #         return app.send_static_file('Home.js')
+    return app
 
-
-
+app = create_app()
 
 @app.route('/', methods=['GET'])
 def index():
-    if request.method == 'GET':
-        return app.send_static_file('index.html')
+    return app.send_static_file('index.html')
 
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
