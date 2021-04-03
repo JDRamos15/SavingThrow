@@ -45,5 +45,5 @@
   "devDependencies": {
     "@types/react": "^17.0.3"
   }, 
-  "proxy": "https://ec2-18-214-208-89.compute-1.amazonaws.com:5432"
+  "proxy": "https://saving-throw.herokuapp.com:5432"
 }
