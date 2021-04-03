@@ -20,7 +20,8 @@ import flask_praetorian
 def create_app():
     guard = flask_praetorian.Praetorian()
 
-    app = Flask(__name__, static_folder=os.path.abspath("../build"), static_url_path='/')
+    app = Flask(__name__, static_folder='../build', static_url_path='/')
+
     # app.config.from_object('config.ProductionConfig')
 
     #use for heroku
@@ -46,12 +47,11 @@ app = create_app()
 
 @app.errorhandler(404)
 def not_found(e):
-    return app.send_static_file('index.html')
+    return app.send_static_file('.index.html')
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return app.send_static_file('index.html')
+@app.route('/', methods=['GET'])
+def index():
+    return app.send_static_file('.index.html')
 
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
