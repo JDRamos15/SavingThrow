@@ -9,7 +9,6 @@ node_modules/
 /coverage
 
 # production
-/build
 
 # misc
 .DS_Store
@@ -32,7 +31,6 @@ _pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -131,6 +129,7 @@ celerybeat.pid
 
 # Environments
 .env
+.flaskenv
 .venv
 env/
 venv/

@@ -1,4 +1,6 @@
-from SavingThrow.extensions import db
+# UNCOMMENT FOR HEROKU
+from api.extension import db
+# from extension import db
   
 class userModel(db.Model):
     __tablename__ = 'users'
