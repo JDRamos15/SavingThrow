@@ -1,3 +1,3 @@
-from api.app import create_app
+from api.app import app
 
-app = create_app
+prog = app

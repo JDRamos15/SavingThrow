@@ -12,31 +12,29 @@ from flask_cors import CORS
 # testing, must install in backend env
 import flask_praetorian
 
-def create_app(config_file='settings.py'):
-    guard = flask_praetorian.Praetorian()
+guard = flask_praetorian.Praetorian()
 
-    app = Flask(__name__, static_folder='../build', static_url_path='/')
+app = Flask(__name__, static_folder='../build', static_url_path='/')
 
-    # app.config.from_object('config.ProductionConfig')
+# app.config.from_object('config.ProductionConfig')
 
-    #use for heroku
-    app.config.from_pyfile(config_file)
-    # app.config.from_object(os.environ['APP_SETTINGS'])
+#use for heroku
+app.config.from_pyfile('settings.py')
+# app.config.from_object(os.environ['APP_SETTINGS'])
 
-    #testing
-    # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-    # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
+#testing
+# app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
+# app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
-    db.init_app(app)
-    # CORS(app)
+db.init_app(app)
+# CORS(app)
 
-    migrate = Migrate(app, db)
-    app.cli.add_command(create_tables)
+migrate = Migrate(app, db)
+app.cli.add_command(create_tables)
 
-    # @app.route("/")
-    # def home():
-    #         return app.send_static_file('Home.js')
-    return app
+# @app.route("/")
+# def home():
+#         return app.send_static_file('Home.js')
 
 
 
@@ -72,7 +70,7 @@ def createUser():
 # def getUser():
 
     
-# if __name__ == '__main__':
-#     app.run()
+if __name__ == '__main__':
+    app.run()
 
 
