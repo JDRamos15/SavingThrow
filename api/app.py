@@ -96,7 +96,7 @@ def login():
         if user:
             if check_password_hash(upassword, user.upassword.replace(" ", "")):
             # if user.upassword.replace(" ", "") == upassword:
-                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30), app.config['SECRET_KEY']})
+                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
                 # return redirect(url_for('profile'))
                 return jsonify({'token' : token.decode('UTF-8')})
             else:
