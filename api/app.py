@@ -41,7 +41,8 @@ app.cli.add_command(create_tables)
 
 @app.route('/', methods=['GET'])
 def index():
-    return app.send_static_file('index.html')
+    if request.method == 'GET':
+        return app.send_static_file('index.html')
 
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
