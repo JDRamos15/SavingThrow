@@ -20,8 +20,7 @@ import flask_praetorian
 def create_app():
     guard = flask_praetorian.Praetorian()
 
-    app = Flask(__name__, static_folder='../build', static_url_path='/')
-
+    app = Flask(__name__, static_folder=os.path.abspath("../build"), static_url_path='/')
     # app.config.from_object('config.ProductionConfig')
 
     #use for heroku
