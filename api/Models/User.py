@@ -5,7 +5,7 @@ from api.extension import db
 class userModel(db.Model):
     __tablename__ = 'users'
  
-    uid = db.Column(db.Integer, db.primary_key = True)
+    uid = db.Column(db.Integer, primary_key = True)
     ufirst_name = db.Column(db.String())
     ulast_name = db.Column(db.String())
     uemail = db.Column(db.String())
