@@ -20,7 +20,7 @@ import flask_praetorian
 def create_app():
     guard = flask_praetorian.Praetorian()
 
-    app = Flask(__name__, static_folder='./build', static_url_path='/')
+    app = Flask(__name__, static_folder='../build', static_url_path='/')
 
     # app.config.from_object('config.ProductionConfig')
 
@@ -49,8 +49,9 @@ app = create_app()
 def not_found(e):
     return app.send_static_file('index.html')
 
-@app.route('/', methods=['GET'])
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
     return app.send_static_file('index.html')
 
 @app.route("/api/create", methods=['GET','POST'])
