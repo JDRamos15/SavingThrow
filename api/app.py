@@ -85,7 +85,7 @@ def index():
 def login():
     if request.method == 'POST':
         body = request.get_json()     
-        uemail = body['email']
+        uusername = body['username']
         upassword = body['password']
 
         if not body or not uusername or not upassword:

@@ -46,7 +46,7 @@ export default function Login(props: { history: string[]; }){
             setSubmitting(false);
         })}>
         <div>
-            <label htmlFor="username"> Email</label>
+            <label htmlFor="username"> Username</label>
             <input 
                 type="username" 
                 name="username" 
