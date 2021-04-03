@@ -39,7 +39,7 @@ app.cli.add_command(create_tables)
 
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
 
