@@ -54,11 +54,7 @@ def not_found(e):
 def index():
     return app.send_static_file('index.html')
 
-<<<<<<< HEAD:app.py
-@app.route("/api/create-user", methods=['POST'])
-=======
 @app.route("/api/create", methods=['GET','POST'])
->>>>>>> Test7:api/app.py
 def createUser():
     if request.method == 'GET':
         return jsonify("Login via the login Form")
