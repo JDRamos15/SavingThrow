@@ -1,4 +1,4 @@
-from extension import db
+import extension.db
   
 class userModel(db.Model):
     __tablename__ = 'users'

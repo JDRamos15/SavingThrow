@@ -2,9 +2,9 @@ import os
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from Models.User import userModel
+import Models.User.userModel
 from commands import create_tables
-from extension import db
+import extension.db
 import datetime
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS

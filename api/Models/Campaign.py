@@ -1,4 +1,4 @@
-from extension import db
+import extension.db
  
  
 class campaignModel(db.Model):
