@@ -94,7 +94,8 @@ def login():
         user = userModel.query.filter_by(uusername = uusername).first()      
 
         if user:
-            if check_password_hash(upassword, user.upassword.replace(" ", "")):
+            check = user.upassword.replace(" ", "")
+            if check_password_hash(upassword, check):
             # if user.upassword.replace(" ", "") == upassword:
                 token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
                 # return redirect(url_for('profile'))
