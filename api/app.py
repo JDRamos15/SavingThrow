@@ -54,6 +54,33 @@ def not_found(e):
 def index():
     return app.send_static_file('index.html')
 
+
+@app.route("/api/login", methods=['GET', 'POST'])
+def login():
+
+    if request.method == 'POST':
+        body = request.get_json()
+        uemail = body['email']
+        upassword = body['password']
+
+        user = userModel.query.filter_by(uusername = uusername).first()
+        if user:
+            if user.upassword.replace(" ", "") == upassword:
+                data = {"Success": True,
+                        "loggedIn": True,
+                        # "token": access_token,
+                        "username": uusername,
+                        "message": "You are in"}
+                # return redirect(url_for('profile'))
+                return jsonify(data, 200)
+            else:
+                return jsonify("Incorrect email or password", 404)
+        else:
+            return jsonify("Account does not exist", 404)
+
+    
+    return "Method is not POST"
+
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
     if request.method == 'GET':
