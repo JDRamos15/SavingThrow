@@ -2,7 +2,7 @@ import os
 import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
-from datetime import datetime
+import datetime
 from flask_sqlalchemy import SQLAlchemy
 # UNCOMMENT FOR HEROKU
 from .Models.User import userModel
@@ -17,6 +17,11 @@ from .extension import db
 from flask_cors import CORS
 # testing, must install in backend env
 import flask_praetorian
+# used for authentication for login and create account
+import werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+import jwt
+from functools import wraps
 
 def create_app():
     guard = flask_praetorian.Praetorian()
@@ -46,6 +51,27 @@ def create_app():
 
 app = create_app()
 
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-acccess-token']
+
+        if not token:
+            return jsonify({'message' : 'Token is missing!'}), 401
+
+        try: 
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+            current_user = userModel.query.filter_by(publicId=data['publicId']).first()
+        except:
+            return jsonify({'message' : 'Token is invalid!'}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
@@ -57,22 +83,22 @@ def index():
 
 @app.route("/api/login", methods=['GET', 'POST'])
 def login():
-
     if request.method == 'POST':
-        body = request.get_json()
+        body = request.get_json()     
         uemail = body['email']
         upassword = body['password']
 
-        user = userModel.query.filter_by(uusername = uusername).first()
+        if not body or not uusername or not upassword:
+            return jsonify("Account does not exist", 404)
+
+        user = userModel.query.filter_by(uusername = uusername).first()      
+
         if user:
-            if user.upassword.replace(" ", "") == upassword:
-                data = {"Success": True,
-                        "loggedIn": True,
-                        # "token": access_token,
-                        "username": uusername,
-                        "message": "You are in"}
+            if check_password_hash(upassword, user.upassword.replace(" ", "")):
+            # if user.upassword.replace(" ", "") == upassword:
+                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30), app.config['SECRET_KEY']})
                 # return redirect(url_for('profile'))
-                return jsonify(data, 200)
+                return jsonify({'token' : token.decode('UTF-8')})
             else:
                 return jsonify("Incorrect email or password", 404)
         else:
@@ -80,6 +106,7 @@ def login():
 
     
     return "Method is not POST"
+
 
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
@@ -93,9 +120,9 @@ def createUser():
             ufirst_name = body['firstName']
             ulast_name = body['lastName']
             uemail = body['email']
-            upassword = body['password']
+            upassword = generate_password_hash(body['password'], method='sha256')
             uusername = body['username']
-            new_user = userModel(ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
+            new_user = userModel(publicId=str(uuid.uuid4()),ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
             db.session.add(new_user)
             db.session.commit()
     
@@ -119,7 +146,13 @@ def createGame():
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
-    
+
+@app.route("/api/hello")
+@token_required
+def hello(current_user):
+    return <h1> Hello </h1>    
+
+
 if __name__ == '__main__':
     app.run()
 

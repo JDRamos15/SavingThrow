@@ -33,13 +33,14 @@ export default function Login(props: { history: string[]; }){
                 })
             });
             const data = await response.json();
-            if (data[1] != 200){
-                console.log("Login Unsuccesful")
-                return;
-            }
-            else{
-                props.history.push('/profile');
-            }
+            console.log(data)
+            // if (data[1] != 200){
+            //     console.log("Login Unsuccesful")
+            //     return;
+            // }
+            // else{
+            //     props.history.push('/profile');
+            // }
             
 
             setSubmitting(false);
