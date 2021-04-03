@@ -44,6 +44,5 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.3"
-  }, 
-  "proxy": "https://saving-throw.herokuapp.com:5432"
+  }
 }
