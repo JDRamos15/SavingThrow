@@ -18,7 +18,7 @@ from flask_cors import CORS
 # testing, must install in backend env
 import flask_praetorian
 # used for authentication for login and create account
-import werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import jwt
 from functools import wraps
