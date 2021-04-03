@@ -45,6 +45,10 @@ def create_app():
 
 app = create_app()
 
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
+
 @app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
