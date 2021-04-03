@@ -150,7 +150,7 @@ def createGame():
 @app.route("/api/hello")
 @token_required
 def hello(current_user):
-    return <h1> Hello </h1>    
+    return jsonify("tokenized!"), 201   
 
 
 if __name__ == '__main__':
