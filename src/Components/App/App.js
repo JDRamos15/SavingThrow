@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import React from "react";
 import Home from "../Home/Home";
-import Navbar from "../NavBar/Navbar"
+import Navbar from "../NavBar/NavBar"
 import CreateUser from "../CreateAccount/CreateAccount"
 import CreateGame from '../GameManagement/CreateGame/CreateGame';
 

@@ -2,16 +2,18 @@ import os
 import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
-from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 # UNCOMMENT FOR HEROKU
-from .Models.User import userModel
-from .commands import create_tables
-from .extension import db
+# from .Models.User import userModel
+# from .Models.Campaign import campaignModel
+# from .commands import create_tables
+# from .extension import db
 
-# from Models.User import userModel
-# from commands import create_tables
-# from extension import db
+from Models.User import userModel
+from Models.Campaign import campaignModel
+from commands import create_tables
+from extension import db
+
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
@@ -54,11 +56,7 @@ def not_found(e):
 def index():
     return app.send_static_file('index.html')
 
-<<<<<<< HEAD:app.py
-@app.route("/api/create-user", methods=['POST'])
-=======
 @app.route("/api/create", methods=['GET','POST'])
->>>>>>> Test7:api/app.py
 def createUser():
     if request.method == 'GET':
         return jsonify("Login via the login Form")
@@ -90,9 +88,12 @@ def createGame():
         dm_uid = body['dm_uid']
         description = body['description']
         start_date = body['start_date']
-        date = datetime.now()
-        new_campaign = userModel(ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
-        db.session.add(new_user)
+        looking_for = body['looking_for']
+        date_updated = datetime.datetime.now().replace(microsecond=0)
+        print("Here")
+        print(date_updated)
+        new_campaign = campaignModel(name=name, dm_uid=dm_uid, description=description,start_date=start_date,looking_for=looking_for,date_updated=date_updated)
+        db.session.add(new_campaign)
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
