@@ -4,15 +4,15 @@ from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 # UNCOMMENT FOR HEROKU
-# from .Models.User import userModel
-# from .Models.Campaign import campaignModel
-# from .commands import create_tables
-# from .extension import db
+from .Models.User import userModel
+from .Models.Campaign import campaignModel
+from .commands import create_tables
+from .extension import db
 
-from Models.User import userModel
-from Models.Campaign import campaignModel
-from commands import create_tables
-from extension import db
+# from Models.User import userModel
+# from Models.Campaign import campaignModel
+# from commands import create_tables
+# from extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
@@ -90,8 +90,6 @@ def createGame():
         start_date = body['start_date']
         looking_for = body['looking_for']
         date_updated = datetime.datetime.now().replace(microsecond=0)
-        print("Here")
-        print(date_updated)
         new_campaign = campaignModel(name=name, dm_uid=dm_uid, description=description,start_date=start_date,looking_for=looking_for,date_updated=date_updated)
         db.session.add(new_campaign)
         db.session.commit()
