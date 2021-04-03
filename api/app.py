@@ -101,7 +101,7 @@ def login():
                 # return redirect(url_for('profile'))
                 return jsonify({'token' : token.decode('UTF-8')})
             else:
-                return jsonify("Incorrect email or password", upassword, check), 404
+                return jsonify("Incorrect email or password", upassword, check_password_hash(upassword, check)), 404
         else:
             return jsonify("Account does not exist", 404)
 
