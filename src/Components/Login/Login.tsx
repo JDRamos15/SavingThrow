@@ -11,8 +11,8 @@ interface FormData {
 export default function Login(props: { history: string[]; }){
     const {register, handleSubmit, errors,} = useForm<FormData>({
         defaultValues:{
-            username: "testing",
-            password: "testing123",
+            username: "bobyWillRockU",
+            password: "R0b#rt123",
         }
     });
     const [submitting, setSubmitting] = useState<boolean>(false);
