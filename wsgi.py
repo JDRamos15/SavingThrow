@@ -1,5 +1,3 @@
-import os
-from api.app import app
+from api.app import create_app
 
-if __name__ == "__main__":
-    app.run()
+app = create_app
