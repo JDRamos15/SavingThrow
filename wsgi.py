@@ -1,3 +1,5 @@
-from api.app import getApp
+import os
+from api.app import app
 
-app = getApp()
+if __name__ == "__main__":
+    app.run()
