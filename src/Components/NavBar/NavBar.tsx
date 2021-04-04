@@ -9,7 +9,7 @@ export default function NavBar() {
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="ml-auto">
                     <Nav.Link href="/create-user">Create account</Nav.Link>
-                    <Nav.Link href="/signin">Sign in</Nav.Link>
+                    <Nav.Link href="/login">Sign in</Nav.Link>
                     {/* <Nav.Link href={"/profile"}>Profile</Nav.Link> */}
                 </Nav>
             </Navbar.Collapse>

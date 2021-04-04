@@ -3,16 +3,11 @@ import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-# UNCOMMENT FOR HEROKU
-from .Models.User import userModel
-from .Models.Campaign import campaignModel
-from .commands import create_tables
-from .extension import db
 
-# from Models.User import userModel
-# from Models.Campaign import campaignModel
-# from commands import create_tables
-# from extension import db
+from Models.User import userModel
+from Models.Campaign import campaignModel
+from commands import create_tables
+from extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security

@@ -81,6 +81,20 @@ export default function CreateGame() {
                 onChange={togglSwitch}
                 value={isEnabled}
             />
+        </div>
+        <div>
+            <label htmlFor="description">Password?</label>
+            <input
+                type="text"
+                name="description"
+                id="description"
+                ref={register({
+                    required: {
+                        value: true,
+                        message: "Please enter your campaign description"
+                    }
+                })}
+            />
             {errors.description ? <div>{errors.description.message} </div> : null}
         </div>
         <div>
