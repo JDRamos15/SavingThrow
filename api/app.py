@@ -4,14 +4,11 @@ from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 import datetime
 from flask_sqlalchemy import SQLAlchemy
-# UNCOMMENT FOR HEROKU
-# from .Models.User import userModel
-# from .commands import create_tables
-# from .extension import db
+# Accept incoming changes
+from .Models.User import userModel
+from .commands import create_tables
+from .extension import db
 
-from Models.User import userModel
-from commands import create_tables
-from extension import db
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
