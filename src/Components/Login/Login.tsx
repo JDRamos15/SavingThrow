@@ -1,7 +1,8 @@
 import {useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import { isPropertySignature } from "typescript";
-
+import {login} from "../../Services/authentication";
+import { useHistory } from "react-router-dom";
 
 interface FormData {
     username: string;
@@ -16,10 +17,10 @@ export default function Login(props: { history: string[]; }){
         }
     });
     const [submitting, setSubmitting] = useState<boolean>(false);
-
+    const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return <form onSubmit={handleSubmit(async(formData)=>{
             setSubmitting(true);
-            
+            setServerErrors([]);
             console.log(formData, "formData");
             
             const response = await fetch("/api/login", {
@@ -33,7 +34,15 @@ export default function Login(props: { history: string[]; }){
                 })
             });
             const data = await response.json();
-            console.log(data)
+            if (data['status'] == "Success"){
+                console.log(data)
+                console.log(data['username'])
+                login(data['loggedIn'], data['token'], data['username'], data['public_id'])
+                props.history.push('/profile/'+data['username']);
+            }
+            else{
+                setServerErrors([data['error']]);
+            }
             // if (data[1] != 200){
             //     console.log("Login Unsuccesful")
             //     return;
@@ -45,6 +54,14 @@ export default function Login(props: { history: string[]; }){
 
             setSubmitting(false);
         })}>
+            {serverErrors ? (
+            <ul>
+                {serverErrors.map((error) => ( 
+                <li key={error}>{error}</li>
+                ))}
+            </ul>
+           ): null }
+
         <div>
             <label htmlFor="username"> Username</label>
             <input 

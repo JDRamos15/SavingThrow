@@ -5,13 +5,13 @@ from flask_migrate import Migrate
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 # UNCOMMENT FOR HEROKU
-from .Models.User import userModel
-from .commands import create_tables
-from .extension import db
+# from .Models.User import userModel
+# from .commands import create_tables
+# from .extension import db
 
-# from Models.User import userModel
-# from commands import create_tables
-# from extension import db
+from Models.User import userModel
+from commands import create_tables
+from extension import db
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
@@ -51,6 +51,8 @@ def create_app():
 
 app = create_app()
 
+# send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
+# route that requires a user to be signed in.
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -88,22 +90,26 @@ def login():
         uusername = body['username']
         upassword = body['password']
 
-        if not body or not uusername or not upassword:
-            return jsonify("Account does not exist", 404)
-
         user = userModel.query.filter_by(uusername=body['username']).first()      
 
         if user:
             check = user.upassword.replace(" ", "")
+            # check_password_hash(HASH_PASSWORD, REGULAR_PASSWORD)
             if check_password_hash(check, upassword):
-            # if user.upassword.replace(" ", "") == upassword:
-                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-                # return redirect(url_for('profile'))
-                return jsonify({'token' : token.decode('UTF-8')})
+                # encodes publicId to create an access token to be sent to front end, current duration 8 hours(can be change to minutes=10 for testing)
+                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=8)}, app.config['SECRET_KEY'])
+                return jsonify({
+                    'status' : "Success",
+                    'token' : token.decode('UTF-8'),
+                    'username' : uusername,
+                    'user_id' : user.uid,
+                    'public_id' : user.publicId,
+                    'loggedIn' : True
+                    })
             else:
-                return jsonify("Incorrect email or password"), 404
+                return jsonify({'error' : "Incorrect email or password"}), 404
         else:
-            return jsonify("Account does not exist", 404)
+            return jsonify({'error' : "Incorrect email or password"}), 404
 
     
     return "Method is not POST"
@@ -130,9 +136,13 @@ def createUser():
             return jsonify("Success"), 201
     
             
-        return jsonify("Email or Username already is use"), 400
+        return jsonify({
+            'error' : "Email or Username already in use."
+        }), 401
+        # jsonify("Email or Username already is use"), 400
 
 @app.route("/api/create-game", methods=['POST'])
+@token_required
 def createGame():
     if request.method == 'POST':        
         body = request.get_json()
