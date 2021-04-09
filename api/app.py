@@ -5,15 +5,20 @@ from flask_migrate import Migrate
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 # Accept incoming changes
-from .Models.User import userModel
-from .commands import create_tables
-from .extension import db
+# from .Models.User import userModel
+# from .Models.Item import itemModel
+# from .commands import create_tables
+# from .extension import db
+
+from Models.User import userModel
+from Models.Item import itemModel
+from commands import create_tables
+from extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
 # testing, must install in backend env
-import flask_praetorian
 # used for authentication for login and create account
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
@@ -21,7 +26,6 @@ import jwt
 from functools import wraps
 
 def create_app():
-    guard = flask_praetorian.Praetorian()
 
     app = Flask(__name__, static_folder='../build', static_url_path='/')
 
@@ -159,6 +163,42 @@ def createGame():
 @token_required
 def hello(current_user):
     return jsonify("tokenized!"), 201   
+
+
+
+@app.route("/api/itemSearch", methods=['GET'])
+def itemSearch():
+    if request.method == 'GET':
+
+        try:
+            items_data = itemModel.query.all()
+            return jsonify([item.serialize() for item in items_data])
+        except Exception as item:
+            return(str(item))
+
+
+        
+        # body = request.get_json()
+        # body_name = body['name']
+        # body_type = body['type']
+        # body_description = body['description']
+        # Read data sent by user
+        # query search by:
+        #       name
+        #       type
+        #       description(?)
+
+        # if item_name:
+        #     item_name = itemModel.query.filter_by(item_name=body['name'])
+        #     return jsonify('Name' : item_name)
+        # elif item_type:
+        #     item_type = itemModel.query.filter_by(item_type=body['type'])
+        #     return jsonify('Type' : item_type)
+        # else:
+        #     item_description = itemModel.query.filter(itemModel.description.contains(body_description))
+        #     return jsonify('Description' : item_description)
+
+
 
 
 if __name__ == '__main__':

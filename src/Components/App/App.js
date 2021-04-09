@@ -7,6 +7,7 @@ import CreateUser from "../CreateAccount/CreateAccount"
 import CreateGame from '../GameManagement/CreateGame/CreateGame';
 import Login from "../Login/Login"
 import Profile from "../Profile/Profile"
+import Items from '../Item/Item';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route exact path="/create-game" component={CreateGame} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/profile/:username" component={Profile} />
+          <Route exact path="/itemSearch" component={Items} />
           <Redirect to="/" />
         </Switch>
       </Router>

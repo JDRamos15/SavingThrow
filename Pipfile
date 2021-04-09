@@ -12,6 +12,7 @@ python-dotenv = "*"
 flask-praetorian = "*"
 flask-cors = "*"
 flask = "*"
+jwt = "*"
 
 [dev-packages]
 
