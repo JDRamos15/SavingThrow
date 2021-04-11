@@ -47,7 +47,7 @@ app = create_app()
 def not_found(e):
     return app.send_static_file('index.html')
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     return app.send_static_file('index.html')
 
@@ -78,15 +78,43 @@ def createUser():
 def createGame():
     if request.method == 'POST':        
         body = request.get_json()
-        print(body)
         name = body['name']
         dm_uid = body['dm_uid']
         description = body['description']
+        if(description == ""):
+            description = None
         start_date = body['start_date']
         looking_for = body['looking_for']
         date_updated = datetime.datetime.now().replace(microsecond=0)
-        new_campaign = campaignModel(name=name, dm_uid=dm_uid, description=description,start_date=start_date,looking_for=looking_for,date_updated=date_updated)
+        password = body['password']
+        if(password == ""):
+            password = None
+        ccapacity = body['capacity']
+        new_campaign = campaignModel(cname=name, dm_uid=dm_uid, cdescription=description,start_date=start_date,looking_for=looking_for,date_updated=date_updated,password=password,ccapacity=ccapacity)
         db.session.add(new_campaign)
+        db.session.commit()
+
+        return make_response(jsonify("Success", 201))
+
+
+@app.route("/api/getgames", methods=['GET'])
+def deleteGame():
+    if request.method == 'GET':        
+        body = request.get_json()
+        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
+        print(campaignToDelete)
+        db.session.delete(campaignToDelete)
+        db.session.commit()
+
+        return make_response(jsonify("Success", 201))
+    
+@app.route("/api/delete-game", methods=['POST'])
+def deleteGame():
+    if request.method == 'POST':        
+        body = request.get_json()
+        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
+        print(campaignToDelete)
+        db.session.delete(campaignToDelete)
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
