@@ -14,6 +14,11 @@ from extension import db
 from flask_cors import CORS
 # testing, must install in backend env
 import flask_praetorian
+# used for authentication for login and create account
+from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+import jwt
+from functools import wraps
 
 def create_app():
     guard = flask_praetorian.Praetorian()
@@ -43,6 +48,29 @@ def create_app():
 
 app = create_app()
 
+# send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
+# route that requires a user to be signed in.
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-acccess-token']
+
+        if not token:
+            return jsonify({'message' : 'Token is missing!'}), 401
+
+        try: 
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+            current_user = userModel.query.filter_by(publicId=data['publicId']).first()
+        except:
+            return jsonify({'message' : 'Token is invalid!'}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
@@ -50,6 +78,39 @@ def not_found(e):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return app.send_static_file('index.html')
+
+
+@app.route("/api/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        body = request.get_json()     
+        uusername = body['username']
+        upassword = body['password']
+
+        user = userModel.query.filter_by(uusername=body['username']).first()      
+
+        if user:
+            check = user.upassword.replace(" ", "")
+            # check_password_hash(HASH_PASSWORD, REGULAR_PASSWORD)
+            if check_password_hash(check, upassword):
+                # encodes publicId to create an access token to be sent to front end, current duration 8 hours(can be change to minutes=10 for testing)
+                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=8)}, app.config['SECRET_KEY'])
+                return jsonify({
+                    'status' : "Success",
+                    'token' : token.decode('UTF-8'),
+                    'username' : uusername,
+                    'user_id' : user.uid,
+                    'public_id' : user.publicId,
+                    'loggedIn' : True
+                    })
+            else:
+                return jsonify({'error' : "Incorrect email or password"}), 404
+        else:
+            return jsonify({'error' : "Incorrect email or password"}), 404
+
+    
+    return "Method is not POST"
+
 
 @app.route("/api/create", methods=['GET','POST'])
 def createUser():
@@ -63,18 +124,22 @@ def createUser():
             ufirst_name = body['firstName']
             ulast_name = body['lastName']
             uemail = body['email']
-            upassword = body['password']
+            upassword = generate_password_hash(body['password'], method='sha256')
             uusername = body['username']
-            new_user = userModel(ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
+            new_user = userModel(publicId=str(uuid.uuid4()),ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
             db.session.add(new_user)
             db.session.commit()
     
             return jsonify("Success"), 201
     
             
-        return jsonify("Email or Username already is use"), 400
+        return jsonify({
+            'error' : "Email or Username already in use."
+        }), 401
+        # jsonify("Email or Username already is use"), 400
 
 @app.route("/api/create-game", methods=['POST'])
+@token_required
 def createGame():
     if request.method == 'POST':        
         body = request.get_json()
@@ -118,7 +183,13 @@ def deleteGame():
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
-    
+
+@app.route("/api/hello")
+@token_required
+def hello(current_user):
+    return jsonify("tokenized!"), 201   
+
+
 if __name__ == '__main__':
     app.run()
 
