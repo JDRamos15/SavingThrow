@@ -23,15 +23,7 @@ export default function CreateGame() {
     return <form onSubmit={handleSubmit(async (formData) => {
         setSubmitting(true);
         setServerErrors([]);
-        // const body = JSON.stringify({
-        //     name: formData.name,
-        //     description: formData.description,
-        //     dm_uid: 1,
-        //     looking_for: isEnabled,
-        //     start_date: formData.start_date,
-        //     password: formData.password,
-        //     capacity: formData.capacity
-        // })
+        
         const response = await fetch("/api/create-game", {
             method: "POST",
             headers: {

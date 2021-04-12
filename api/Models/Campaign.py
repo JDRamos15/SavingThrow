@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 from extension import db
-=======
-# Accept current change
-from api.extension import db
->>>>>>> origin/Test8Login
  
 class campaignModel(db.Model):
     __tablename__ = 'campaign'

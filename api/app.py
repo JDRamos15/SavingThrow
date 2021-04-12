@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from Models.User import userModel
 from Models.Campaign import campaignModel
+from Models.characterSheets import characterSheetModel
 from commands import create_tables
 from extension import db
 
@@ -20,6 +21,11 @@ import uuid
 import jwt
 from functools import wraps
 
+UPLOAD_FOLDER = './media'
+ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
+
+
+
 def create_app():
     guard = flask_praetorian.Praetorian()
 
@@ -30,7 +36,7 @@ def create_app():
     #use for heroku
     app.config.from_pyfile('settings.py')
     # app.config.from_object(os.environ['APP_SETTINGS'])
-
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     #testing
     # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
     # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
@@ -163,11 +169,10 @@ def createGame():
 
 
 @app.route("/api/getgames", methods=['GET'])
-def deleteGame():
+def getGames():
     if request.method == 'GET':        
         body = request.get_json()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
-        print(campaignToDelete)
         db.session.delete(campaignToDelete)
         db.session.commit()
 
@@ -178,11 +183,30 @@ def deleteGame():
     if request.method == 'POST':        
         body = request.get_json()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
-        print(campaignToDelete)
         db.session.delete(campaignToDelete)
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route("/api/create-charactersheet", methods=['POST'])
+def createCharacterSheet():
+    if request.method == 'POST':   
+        file = request.files['characterSheet']
+        if file and allowed_file(file.filename):
+            cs_path = str(uuid.uuid4())
+            filename = file.filename
+            date_created = datetime.datetime.now().replace(microsecond=0)
+            date_updated = datetime.datetime.now().replace(microsecond=0)
+            destination="/characterSheets/".join([UPLOAD_FOLDER, cs_path])
+            file.save(destination)
+            new_characterSheet = characterSheetModel(cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
+            db.session.add(new_characterSheet)
+            db.session.commit()
+            return make_response(jsonify("Success", 201))
 
 @app.route("/api/hello")
 @token_required

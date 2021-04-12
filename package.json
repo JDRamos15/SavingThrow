@@ -47,11 +47,7 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.3",
-<<<<<<< HEAD
-    "@types/react-native": "^0.64.2"
-=======
     "@types/react-router-dom": "^5.1.7"
->>>>>>> origin/Test8Login
   },
   "proxy": "http://localhost:5000/"
 }
