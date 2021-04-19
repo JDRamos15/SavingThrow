@@ -4,8 +4,7 @@ import { isPropertySignature } from "typescript";
 import { login } from "../../Services/authentication";
 import { useHistory } from "react-router-dom";
 
-export default function CharacterSheet
-    (props: { history: string[]; }) {
+export default function CharacterSheet(props: { history: string[]; }) {
     const { register, handleSubmit, errors, } = useForm();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);

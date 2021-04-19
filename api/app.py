@@ -20,6 +20,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import jwt
 from functools import wraps
+from flask_socketio import SocketIO, join_room, leave_room
 
 UPLOAD_FOLDER = './media'
 ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
@@ -46,7 +47,7 @@ def create_app():
 
     migrate = Migrate(app, db)
     app.cli.add_command(create_tables)
-
+    socketio = SocketIO(app)
     # @app.route("/")
     # def home():
     #         return app.send_static_file('Home.js')
@@ -208,6 +209,20 @@ def createCharacterSheet():
             db.session.commit()
             return make_response(jsonify("Success", 201))
 
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    join_room(room)
+    send(username + ' has entered the room.', to=room)
+
+@socketio.on('leave')
+def on_leave(data):
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+    send(username + ' has left the room.', to=room)
+
 @app.route("/api/hello")
 @token_required
 def hello(current_user):
@@ -215,6 +230,6 @@ def hello(current_user):
 
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
 
 
