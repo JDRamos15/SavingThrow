@@ -1,5 +1,8 @@
 # Accept current change
-from api.extension import db
+# from api.extension import db
+
+from extension import db
+
   
 class userModel(db.Model):
     __tablename__ = 'users'
@@ -22,4 +25,4 @@ class userModel(db.Model):
         self.uusername = uusername
  
     def __repr__(self):
-        return f'User("{self.publicId}","{self.ufirst_name}","{self.last_name}", "{self.uemail}", "{self.uusername}")'
+        return f'User("{self.publicId}","{self.ufirst_name}","{self.ulast_name}", "{self.uemail}", "{self.uusername}")'

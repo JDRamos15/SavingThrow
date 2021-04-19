@@ -5,9 +5,14 @@ from flask_migrate import Migrate
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 # Accept incoming changes
-from .Models.User import userModel
-from .commands import create_tables
-from .extension import db
+# UNCOMMENT FOR HEROKU
+# from .Models.User import userModel
+# from .commands import create_tables
+# from .extension import db
+
+from Models.User import userModel
+from commands import create_tables
+from extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
@@ -55,17 +60,17 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
 
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-acccess-token']
+        if 'token' in request.headers:
+            token = request.headers['token']
 
         if not token:
-            return jsonify({'message' : 'Token is missing!'}), 401
+            return jsonify({'status' : 'Token is missing!'}), 401
 
         try: 
             data = jwt.decode(token, app.config['SECRET_KEY'])
             current_user = userModel.query.filter_by(publicId=data['publicId']).first()
         except:
-            return jsonify({'message' : 'Token is invalid!'}), 401
+            return jsonify({'status' : 'Token is invalid!'}), 401
 
         return f(current_user, *args, **kwargs)
 
@@ -101,7 +106,8 @@ def login():
                     'username' : uusername,
                     'user_id' : user.uid,
                     'public_id' : user.publicId,
-                    'loggedIn' : True
+                    'loggedIn' : True,
+                    'fname': user.ufirst_name
                     })
             else:
                 return jsonify({'error' : "Incorrect email or password"}), 404
@@ -154,6 +160,27 @@ def createGame():
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
+
+
+@app.route("/api/user", methods=['POST', 'GET'])
+# @token_required
+def getUser():
+    if request.method == 'POST':
+        body = request.get_json()
+        publicid = body['publicId'].replace('"', '')
+        checkPublicId = userModel.query.filter_by(publicId=publicid).first()
+        if checkPublicId is None:
+            return jsonify({'status' : "User does not exist"})
+        else:
+            return jsonify({
+                    'status' : "Success",
+                    'username' : checkPublicId.uusername,
+                    'user_id' : checkPublicId.uid,
+                    'public_id' : checkPublicId.publicId,
+                    'fname': checkPublicId.ufirst_name,
+                    'lname': checkPublicId.ulast_name
+                    }), 200
+
 
 @app.route("/api/hello")
 @token_required

@@ -3,6 +3,9 @@ import {useForm} from "react-hook-form";
 import { isPropertySignature } from "typescript";
 import {login} from "../../Services/authentication";
 import { useHistory } from "react-router-dom";
+import {isLogged,getPublicId,getUsername, logout} from "../../Services/authentication";
+
+
 
 interface FormData {
     username: string;
@@ -37,8 +40,9 @@ export default function Login(props: { history: string[]; }){
             if (data['status'] == "Success"){
                 console.log(data)
                 console.log(data['username'])
-                login(data['loggedIn'], data['token'], data['username'], data['public_id'])
-                props.history.push('/profile/'+data['username']);
+                login(data['loggedIn'], data['token'], data['username'], data['public_id'], data['fname'])
+                // props.history.push('/profile/'+data['username']);
+                window.location.href='/profile/'+data['username']
             }
             else{
                 setServerErrors([data['error']]);
