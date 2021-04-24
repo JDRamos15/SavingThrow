@@ -25,6 +25,7 @@ import uuid
 import jwt
 from functools import wraps
 
+
 def create_app():
     guard = flask_praetorian.Praetorian()
 
@@ -35,10 +36,6 @@ def create_app():
     #use for heroku
     app.config.from_pyfile('settings.py')
     # app.config.from_object(os.environ['APP_SETTINGS'])
-
-    #testing
-    # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-    # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
     db.init_app(app)
     # CORS(app)
@@ -52,6 +49,7 @@ def create_app():
     return app
 
 app = create_app()
+
 
 # send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
 # route that requires a user to be signed in.
@@ -186,6 +184,7 @@ def getUser():
 @token_required
 def hello(current_user):
     return jsonify("tokenized!"), 201   
+
 
 
 if __name__ == '__main__':

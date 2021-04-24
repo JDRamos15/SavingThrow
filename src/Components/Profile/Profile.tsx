@@ -126,12 +126,6 @@ export default function Profile(props: { history: string[]; }){
 
     }
 
-
-    const user = () => {
-      const users = getUser();
-      
-    }
-
     useEffect(() => {
       if(!userProfile.rendered){
         getUser();
@@ -248,7 +242,7 @@ export default function Profile(props: { history: string[]; }){
                       </Collapse>
                     </Card> */}
                     <Box component="span" m={1} className={classes.box}>
-                      <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
+                      <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
                         Add
                       </Button>
                     </Box>
@@ -346,7 +340,7 @@ export default function Profile(props: { history: string[]; }){
                     </Collapse>
                   </Card> */}
                   <Box component="span" m={1} className={classes.box}>
-                    <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
+                    <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { alert('clicked') }}>
                       Add
                     </Button>
                   </Box>

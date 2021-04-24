@@ -1,5 +1,8 @@
-import {useState} from "react";
-import {useForm} from "react-hook-form";
+
+import { Switch } from "@material-ui/core";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { getPublicId, getToken, getUsername } from "../../../Services/authentication";
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./CreateGame.css";
 
@@ -9,88 +12,112 @@ interface FormData {
     description: string;
     start_date: string;
 }
-export default function CreateGame(){
-    const {register, handleSubmit, errors,} = useForm<FormData>({
+export default function CreateGame(props: { history: string[]; }) {
+    const { register, handleSubmit, errors, } = useForm<FormData>({
     });
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [isEnabled, setIsEnabled] = useState(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
-    return <form onSubmit={handleSubmit(async(formData)=>{
-            setSubmitting(true);
-            setServerErrors([]);
-            
-            const response = await fetch("/api/create-game", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    //formData
-                    // if want to uses token(watch video)
-                    name: formData.name,
-                    description: formData.description,
-                    start_date: formData.start_date
-                })
-            });
-            const data = await response.json();
-            if (data[1] = 201)
-                console.log(data[0], ":Server Data");
-            else
-                console.log("Wrong");
-            // if (data.errors){
-            //     setServerErrors(data.errors);
+    function togglSwitch() { setIsEnabled(previousState => !previousState); };
 
-            // }else{
-            //     console.log('success');
-            // }
+    return <form onSubmit={handleSubmit(async (formData) => {
+        setSubmitting(true);
+        setServerErrors([]);
 
-            
+        const response = await fetch("/api/create-game", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: formData.name,
+                description: formData.description,
+                dm_uid: getPublicId(),
+                looking_for: isEnabled,
+                start_date: formData.start_date
+            })
+        });
+        const data = await response.json();
+        if (data[1] = 201){
+            console.log(data[0], ":Server Data");
+            props.history.push('/profile/'+getUsername());
+        }
+        else
+            console.log("Wrong");
 
-            setSubmitting(false);
-        })}>
+
+        setSubmitting(false);
+    })}>
         <div>
             <label htmlFor="name">Campaign Name</label>
-            <input 
-                type="text" 
-                name="Name" 
-                id="name" 
+            <input
+                type="text"
+                name="name"
+                id="name"
                 ref={register({
                     required: {
                         value: true,
                         message: "Type the name of the campaign"
                     }
-                    
-                })} 
+
+                })}
             />
             {errors.name ? <div>{errors.name.message} </div> : null}
         </div>
         <div>
             <label htmlFor="description">Description</label>
-            <input 
-                type="text" 
-                name="description" 
-                id="description" 
-                ref={register({required: {
-                    value: true,
-                    message: "Please enter your campaign description"
-                }})} 
+            <input
+                type="text"
+                name="description"
+                id="description"
+                ref={register({
+                    required: {
+                        value: true,
+                        message: "Please enter your campaign description"
+                    }
+                })}
             />
-             {errors.description ? <div>{errors.description.message} </div>: null}
+            {errors.description ? <div>{errors.description.message} </div> : null}
+        </div>
+        <div>
+            <label htmlFor="description">Looking for new players?</label>
+            <Switch
+                onChange={togglSwitch}
+                value={isEnabled}
+            />
+        </div>
+        <div>
+            <label htmlFor="description">Password?</label>
+            <input
+                type="text"
+                name="description"
+                id="description"
+                ref={register({
+                    required: {
+                        value: true,
+                        message: "Please enter your campaign description"
+                    }
+                })}
+            />
+            {errors.description ? <div>{errors.description.message} </div> : null}
         </div>
         <div>
             <label htmlFor="date">Campaign start date</label>
-            <input 
-                type="date" 
-                name="start_date" 
-                id="start_date" 
-                ref={register({required: {
-                    value: true,
-                    message: "Please enter your campaign start date"
-                }})} 
+            <input
+                type="date"
+                name="start_date"
+                id="start_date"
+                ref={register({
+                    required: {
+                        value: true,
+                        message: "Please enter your campaign start date"
+                    }
+                })}
             />
-             {errors.start_date ? <div>{errors.start_date.message} </div>: null}
+            {errors.start_date ? <div>{errors.start_date.message} </div> : null}
         </div>
         <div>
-            <button type="submit" disabled = {submitting}> Create Game</button>
+            <button type="submit" > Create Game</button>
         </div>
     </form>;
 }
