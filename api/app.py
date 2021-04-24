@@ -20,7 +20,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import jwt
 from functools import wraps
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO, join_room, leave_room, send, close_room
 
 UPLOAD_FOLDER = './media'
 ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
@@ -43,17 +43,19 @@ def create_app():
     # app.config['JWT_REFRESH_LIFESPAN'] = {'days' : 30}
 
     db.init_app(app)
-    # CORS(app)
+    
 
     migrate = Migrate(app, db)
     app.cli.add_command(create_tables)
-    socketio = SocketIO(app)
+    
     # @app.route("/")
     # def home():
     #         return app.send_static_file('Home.js')
     return app
 
 app = create_app()
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
 # route that requires a user to be signed in.
@@ -211,18 +213,23 @@ def createCharacterSheet():
 
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
+    print(data)
+    username = data['name']
     room = data['room']
     join_room(room)
-    send(username + ' has entered the room.', to=room)
+    send(username + ' has entered the room.', to=room, broadcast=True)
 
 @socketio.on('leave')
 def on_leave(data):
-    username = data['username']
+    print('User left!')
+    username = data['name']
     room = data['room']
-    leave_room(room)
+    close_room(room)
     send(username + ' has left the room.', to=room)
 
+@socketio.on('message')
+def handle_message(message):
+    send(message)
 @app.route("/api/hello")
 @token_required
 def hello(current_user):
