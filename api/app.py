@@ -34,6 +34,7 @@ def create_app():
     #use for heroku
     app.config.from_pyfile('settings.py')
     # app.config.from_object(os.environ['APP_SETTINGS'])
+    app.config['JSON_SORT_KEYS'] = False  # to avoid sroting keys alphabetically when calling jsonify()
 
     #testing
     # app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
@@ -173,30 +174,9 @@ def itemSearch():
         try:
             items_data = itemModel.query.all()
             return jsonify([item.serialize() for item in items_data])
+
         except Exception as item:
             return(str(item))
-
-
-        
-        # body = request.get_json()
-        # body_name = body['name']
-        # body_type = body['type']
-        # body_description = body['description']
-        # Read data sent by user
-        # query search by:
-        #       name
-        #       type
-        #       description(?)
-
-        # if item_name:
-        #     item_name = itemModel.query.filter_by(item_name=body['name'])
-        #     return jsonify('Name' : item_name)
-        # elif item_type:
-        #     item_type = itemModel.query.filter_by(item_type=body['type'])
-        #     return jsonify('Type' : item_type)
-        # else:
-        #     item_description = itemModel.query.filter(itemModel.description.contains(body_description))
-        #     return jsonify('Description' : item_description)
 
 
 
