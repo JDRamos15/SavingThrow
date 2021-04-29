@@ -6,6 +6,8 @@ import Navbar from "../NavBar/Navbar"
 import CreateUser from "../CreateAccount/CreateAccount"
 import CreateGame from '../GameManagement/CreateGame/CreateGame';
 import Login from "../Login/Login"
+import CharacterSheet from "../CharacterSheet/CharacterSheet"
+import GamePage from "../GamePage/GamePage"
 import Profile from "../Profile/Profile"
 
 
@@ -20,6 +22,8 @@ function App() {
           <Route exact path="/create-game" component={CreateGame} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/profile/:username" component={Profile} />
+          <Route exact path="/charactersheet" component={CharacterSheet} />
+          <Route exact path="/gamePage" component={GamePage} />
           <Redirect to="/" />
         </Switch>
       </Router>

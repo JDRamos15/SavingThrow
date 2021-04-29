@@ -11,6 +11,8 @@ interface FormData {
     name: string;
     description: string;
     start_date: string;
+    password: string;
+    capacity: number;
 }
 export default function CreateGame(props: { history: string[]; }) {
     const { register, handleSubmit, errors, } = useForm<FormData>({
@@ -32,9 +34,11 @@ export default function CreateGame(props: { history: string[]; }) {
             body: JSON.stringify({
                 name: formData.name,
                 description: formData.description,
-                dm_uid: getPublicId(),
+                dm_uid: 1,
                 looking_for: isEnabled,
-                start_date: formData.start_date
+                start_date: formData.start_date,
+                password: formData.password,
+                capacity: formData.capacity
             })
         });
         const data = await response.json();
@@ -72,30 +76,43 @@ export default function CreateGame(props: { history: string[]; }) {
                 id="description"
                 ref={register({
                     required: {
-                        value: true,
+                        value: false,
                         message: "Please enter your campaign description"
                     }
                 })}
             />
-            {errors.description ? <div>{errors.description.message} </div> : null}
         </div>
         <div>
-            <label htmlFor="description">Looking for new players?</label>
+            <label htmlFor="looking_for">Looking for new players?</label>
             <Switch
                 onChange={togglSwitch}
                 value={isEnabled}
             />
         </div>
         <div>
-            <label htmlFor="description">Password?</label>
+            <label htmlFor="password">Access code? (12 characters max)</label>
             <input
                 type="text"
-                name="description"
-                id="description"
+                name="password"
+                id="password"
+                ref={register({
+                    required: {
+                        value: false,
+                        message: "Please enter your campaign access code"
+                    }
+                })}
+            />
+        </div>
+        <div>
+            <label htmlFor="capacity">How many players? (8 players max)</label>
+            <input
+                type="number"
+                name="capacity"
+                id="capacity"
                 ref={register({
                     required: {
                         value: true,
-                        message: "Please enter your campaign description"
+                        message: "Please enter your campaign capacity"
                     }
                 })}
             />
