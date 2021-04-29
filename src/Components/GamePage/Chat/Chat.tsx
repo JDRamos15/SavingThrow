@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import openSocket from 'socket.io-client';
+import "./Chat.css";
 
-const ENDPOINT = 'http://localhost:5000/'
-const socket = openSocket(ENDPOINT);
 
-export default function Chat({ setMessage, sendMessage, message  }){     
+
+export default function Chat({ setMessage, sendMessage, message, leaveRoom  }: { setMessage: any, sendMessage: any, message: any, leaveRoom: any  }){     
 
     return (
         <div>
             <h1>Chat test</h1>
 
-            <form onSubmit={sendMessage} className="form">
+
+            <form className="form">
                 <input
                     className="input"
                     type="text"
@@ -19,7 +19,8 @@ export default function Chat({ setMessage, sendMessage, message  }){
                     onChange={({ target: { value } }) => setMessage(value)}
                     onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null}
                 />
-                <button className="sendButton" onClick={e => sendMessage(e)}>Send</button>
+                <button className="btn_2" onClick={e => sendMessage(e)}>Send</button>
+                <button className="btn_1" onClick={e => leaveRoom() } >Leave Chat</button>
             </form>
         </div>
 

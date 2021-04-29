@@ -224,12 +224,21 @@ def on_leave(data):
     print('User left!')
     username = data['name']
     room = data['room']
-    close_room(room)
+    leave_room(room)
     send(username + ' has left the room.', to=room)
+
+@socketio.on('close')
+def on_leave(data):
+    username = data['name']
+    room = data['room']
+    send(username + ' has closed the room.', to=room)
+    close_room(room)
+
 
 @socketio.on('message')
 def handle_message(message):
-    send(message)
+    send(message, broadcast=True)
+    
 @app.route("/api/hello")
 @token_required
 def hello(current_user):
