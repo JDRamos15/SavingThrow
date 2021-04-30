@@ -18,22 +18,12 @@ interface FormData {
 }
 export default function CreateAccount(props: { history: string[]; }){
     const {register, handleSubmit, errors,} = useForm<FormData>({
-        defaultValues:{
-            first_name: "Bob",
-            last_name: "Bobson",
-            username: "bobyWillRockU",
-            email: "robert@email.com",
-            password: "R0b#rt123",
-        }
     });
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return <form onSubmit={handleSubmit(async(formData)=>{
             setSubmitting(true);
             setServerErrors([]);
-            // if(submitting){
-            //     return false
-            // }
             console.log(formData, "formData");
             
             const response = await fetch("api/create", {
