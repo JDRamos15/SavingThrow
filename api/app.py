@@ -46,7 +46,7 @@ def create_app():
     #use for heroku
     app.config.from_pyfile('settings.py')
     # app.config.from_object(os.environ['APP_SETTINGS'])
-    
+
     # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     #testing
    
@@ -267,8 +267,9 @@ def on_leave(data):
 
 
 @socketio.on('message')
-def handle_message(message):
-    send(message, broadcast=True)
+def handle_message(data):
+    room =data['room']
+    send(data['message'], broadcast=True, to=room)
     
 @app.route("/api/hello")
 @token_required

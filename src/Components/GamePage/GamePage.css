@@ -1,0 +1,17 @@
+.Chat {
+    align-items: auto;
+}
+
+.fields {
+    text-align:auto;
+    height: 300px;
+    width: 400px;
+    padding: 10px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    float: right  
+}
+
+.title {
+    text-align:center;
+}

@@ -6,3 +6,17 @@
 .btn_2{
     margin-right:10px;
 }
+
+
+form {
+    width: 400px;
+    /* margin: 0 auto; */
+    margin-right: 0;
+    padding-right: 1%;
+  }
+
+
+input {
+    width: 100%;
+    padding: 0.25rem;
+  }
