@@ -99,6 +99,8 @@ export default function Profile(props: { history: string[]; }){
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
         },
         body: JSON.stringify({
           publicId: getPublicId(),

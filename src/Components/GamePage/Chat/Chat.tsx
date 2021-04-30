@@ -7,7 +7,7 @@ export default function Chat({ setMessage, sendMessage, message, leaveRoom  }: {
 
     return (
         <div>
-            <form className="form">
+            <form className="chat-form">
                 <input
                     className="input"
                     type="text"

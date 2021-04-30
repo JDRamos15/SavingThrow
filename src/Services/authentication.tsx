@@ -11,6 +11,8 @@ export const isLogged = () => {
 }
 
 export const login = (logged: boolean, token :string, username: string, public_id: string, fname: string) => {
+    // const new_token = token.replace('"', '')
+    // const new_publicId = public_id.replace('"', "")
     localStorage.setItem('token', token);
     localStorage.setItem('username', JSON.stringify(username));
     localStorage.setItem('isLogged', JSON.stringify(logged));

@@ -21,28 +21,33 @@ export default function CreateGame(props: { history: string[]; }) {
     const [isEnabled, setIsEnabled] = useState(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     function togglSwitch() { setIsEnabled(previousState => !previousState); };
+    const token = getToken();
 
     return <form onSubmit={handleSubmit(async (formData) => {
         setSubmitting(true);
         setServerErrors([]);
 
+        console.log(getPublicId())
         const response = await fetch("/api/create-game", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "x-Access-Token" : `${token}`
             },
             body: JSON.stringify({
                 name: formData.name,
                 description: formData.description,
-                dm_uid: 1,
+                // dm_uid: 1,
+                publicId: getPublicId(),
                 looking_for: isEnabled,
                 start_date: formData.start_date,
                 password: formData.password,
-                capacity: formData.capacity
-            })
+                capacity: formData.capacity,
+            })                // dm_uid: 1,
+
         });
         const data = await response.json();
-        if (data[1] = 201){
+        if (data == "Success"){
             console.log(data[0], ":Server Data");
             props.history.push('/profile/'+getUsername());
         }
@@ -97,7 +102,7 @@ export default function CreateGame(props: { history: string[]; }) {
                 id="password"
                 ref={register({
                     required: {
-                        value: false,
+                        value: true,
                         message: "Please enter your campaign access code"
                     }
                 })}

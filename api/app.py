@@ -73,9 +73,9 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-
-        if 'token' in request.headers:
-            token = request.headers['token']
+        print(request.headers)
+        if 'x-Access-Token' in request.headers:
+            token = request.headers['x-Access-Token']
 
         if not token:
             return jsonify({'status' : 'Token is missing!'}), 401
@@ -160,11 +160,13 @@ def createUser():
 
 @app.route("/api/create-game", methods=['POST'])
 @token_required
-def createGame():
+def createGame(current_user):
     if request.method == 'POST':        
         body = request.get_json()
+        print(body)
         name = body['name']
-        dm_uid = body['dm_uid']
+        dm_uid = body['publicId']
+        # dm_uid =publicId body['dm_uid']
         description = body['description']
         if(description == ""):
             description = None
@@ -179,12 +181,12 @@ def createGame():
         db.session.add(new_campaign)
         db.session.commit()
 
-        return make_response(jsonify("Success", 201))
+        return jsonify("Success"), 201
 
 
 @app.route("/api/user", methods=['POST', 'GET'])
-# @token_required
-def getUser():
+@token_required
+def getUser(current_user):
     if request.method == 'POST':
         body = request.get_json()
         publicid = body['publicId'].replace('"', '')
@@ -203,7 +205,8 @@ def getUser():
 
 
 @app.route("/api/getgames", methods=['GET'])
-def getGames():
+@token_required
+def getGames(current_user):
     if request.method == 'GET':        
         body = request.get_json()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
@@ -213,7 +216,8 @@ def getGames():
         return make_response(jsonify("Success", 201))
     
 @app.route("/api/delete-game", methods=['POST'])
-def deleteGame():
+@token_required
+def deleteGame(current_user):
     if request.method == 'POST':        
         body = request.get_json()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
@@ -242,6 +246,7 @@ def createCharacterSheet():
             db.session.commit()
             return make_response(jsonify("Success", 201))
 
+#sockets
 @socketio.on('join')
 def on_join(data):
     print(data)
