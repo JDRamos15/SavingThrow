@@ -5,6 +5,9 @@ import Home from "../Home/Home";
 import Navbar from "../NavBar/Navbar"
 import CreateUser from "../CreateAccount/CreateAccount"
 import CreateGame from '../GameManagement/CreateGame/CreateGame';
+import Login from "../Login/Login"
+import Profile from "../Profile/Profile"
+
 
 function App() {
   return (
@@ -15,10 +18,8 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/create-user" component={CreateUser} />
           <Route exact path="/create-game" component={CreateGame} />
-          {/*<Route exact path="/login" component={LogIn} />
-        <Route exact path="/profile:email" component={Profike} />*/}
-          {/* <Route exact path="/home" component={Home} /> */}
-          {/* In case no route does not exist, can create a 404 page341 */}
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/profile/:username" component={Profile} />
           <Redirect to="/" />
         </Switch>
       </Router>

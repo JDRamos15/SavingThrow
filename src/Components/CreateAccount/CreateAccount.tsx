@@ -2,6 +2,10 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./CreateAccount.css";
+import { useHistory } from "react-router-dom";
+import {login} from "../../Services/authentication";
+
+
 
 
 interface FormData {
@@ -12,7 +16,7 @@ interface FormData {
     password: string;
 
 }
-export default function CreateAccount(){
+export default function CreateAccount(props: { history: string[]; }){
     const {register, handleSubmit, errors,} = useForm<FormData>({
         defaultValues:{
             first_name: "Bob",
@@ -38,8 +42,6 @@ export default function CreateAccount(){
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    //formData
-                    // if want to uses token(watch video)
                     firstName: formData.first_name,
                     lastName: formData.last_name,
                     username: formData.username,
@@ -48,22 +50,39 @@ export default function CreateAccount(){
                 })
             });
             const data = await response.json();
-            console.log(data);
-            if (data == "Success")
-                console.log(data, ":Server Data");
+            if (data == "Success"){
+                const logInresponse = await fetch("api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username: formData.username,
+                        password: formData.password,
+                    })
+                });
+                const logIndata = await logInresponse.json();
+                if (logIndata['status'] == "Success"){
+                    console.log(logIndata)
+                    login(logIndata['loggedIn'], logIndata['token'], logIndata['username'], logIndata['public_id'], logIndata['fname'])
+                    props.history.push('/profile/'+logIndata['username']);
+                }
+            }
             else
-                console.log("Wrong");
-            // if (data.errors){
-            //     setServerErrors(data.errors);
-
-            // }else{
-            //     console.log('success');
-            // }
-
+                setServerErrors([data['error']]);
+                
             
 
             setSubmitting(false);
         })}>
+            {serverErrors ? (
+            <ul>
+                {serverErrors.map((error) => ( 
+                <li key={error}>{error}</li>
+                ))}
+            </ul>
+           ): null }
+
         <div>
             <label htmlFor="name">First Name</label>
             <input 
