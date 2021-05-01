@@ -38,7 +38,6 @@ export default function CreateGame(props: { history: string[]; }) {
                 name: formData.name,
                 description: formData.description,
                 // dm_uid: 1,
-                publicId: getPublicId(),
                 looking_for: isEnabled,
                 start_date: formData.start_date,
                 password: formData.password,
