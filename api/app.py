@@ -11,10 +11,10 @@ from flask_sqlalchemy import SQLAlchemy
 # from .extension import db
 
 from Models.User import userModel
-
-from Models.User import userModel
 from Models.Campaign import campaignModel
 from Models.characterSheets import characterSheetModel
+from Models.Room import roomModel
+
 from commands import create_tables
 from extension import db
 
@@ -29,6 +29,7 @@ import uuid
 import jwt
 from functools import wraps
 from flask_socketio import SocketIO, join_room, leave_room, send, close_room
+import random
 
 UPLOAD_FOLDER = './media'
 ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
@@ -215,7 +216,7 @@ def getGames(current_user):
             etr['cmid'] = row.cmid
             etr['cname'] = row.cname
             etr['cdescription'] = row.cdescription
-            # etr['password'] = row[3]
+            etr['password'] = row.password
             etr['capacity'] = row.ccapacity
             # etr['start_date'] = row[5]
             # etr['dm_uid'] = row[6]
@@ -256,6 +257,48 @@ def createCharacterSheet():
             db.session.add(new_characterSheet)
             db.session.commit()
             return make_response(jsonify("Success", 201))
+
+@app.route("/api/create-room", methods=['POST'])
+@token_required
+def createRoom(current_user):
+    if request.method == 'POST':        
+        body = request.get_json()
+        gen_room = 0
+        
+        while(True):
+            digits = set(range(10))
+            first = random.randint(1, 9)
+            last_3 = random.sample(digits - {first}, 3)
+            gen_room = int(str(first) + ''.join(map(str, last_3)))
+            checkRoom = roomModel.query.filter_by(room=gen_room).first()
+            if not checkRoom:
+                new_room = roomModel(room= gen_room, isActive= True, rpassword= body['rpassword'], publicId= current_user.publicId, cmid= body['cmid'])
+                db.session.add(new_room)
+                db.session.commit()
+                return jsonify({
+                'status':"Success",
+                'room' : gen_room
+                }), 201 
+
+
+
+       
+
+@app.route("/api/delete-room", methods=['DELETE'])
+@token_required
+def deleteRoom(current_user):
+    if request.method == 'DELETE':        
+        # body = request.get_json()
+        deleteRoom = roomModel.query.filter_by(publicId= current_user.publicId).first()
+        # deleteRoom = roomModel.query.filter_by(room= body['room']).first()
+        if deleteRoom:
+            db.session.delete(deleteRoom)
+            db.session.commit()
+            return jsonify("Success"), 201
+
+        else:
+            return jsonify("Room does not exist"), 404
+
 
 #sockets
 @socketio.on('join')

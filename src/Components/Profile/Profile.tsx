@@ -96,7 +96,7 @@ export default function Profile(props: { history: string[]; }){
       rendered: false
     });
     const [allGames, setAllGames] = React.useState([]);
-
+    const [room, setRoom] = React.useState(0);
 
     async function getUser() {
       const response = await fetch('/api/user', {
@@ -156,6 +156,54 @@ export default function Profile(props: { history: string[]; }){
 
     }
 
+    async function createRoom(id_: number, password_: string) {
+      const response = await fetch('/api/create-room', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
+        },
+        body: JSON.stringify({
+          rpassword: password_,
+          cmid: id_
+        })
+      });
+      const data = await response.json();
+      setRoom(data);
+      console.log(data, "room");
+
+      if(data['status'] == "Token is invalid!"){
+        logout();
+      }
+
+
+    }
+
+    async function deleteRoom() {
+      const response = await fetch('/api/delete-room', {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
+        },
+        // body: JSON.stringify({
+        //   rpassword: password_,
+        //   cmid: id_
+        // })
+      });
+      const data = await response.json();
+      console.log(data);
+
+      if(data['status'] == "Token is invalid!"){
+        logout();
+      }
+
+
+    }
+
+
     useEffect(() => {
       if(!userProfile.rendered){
         getUser();
@@ -192,7 +240,7 @@ export default function Profile(props: { history: string[]; }){
               Games
                 <Grid container wrap="nowrap" spacing={2}>
                   <Grid item xs>
-                    <Typography>
+                    <Typography component={'span'}>
                       No Games     
                     </Typography>
                   </Grid>
@@ -204,7 +252,7 @@ export default function Profile(props: { history: string[]; }){
                 Friends
                 <Grid container wrap="nowrap" spacing={2}>
                   <Grid item xs>
-                    <Typography>
+                    <Typography component={'span'}>
                       No Friends     
                     </Typography>
                   </Grid>
@@ -248,7 +296,7 @@ export default function Profile(props: { history: string[]; }){
               Games
                 <Grid container wrap="nowrap" spacing={2}>
                   <Grid item xs>
-                    <Typography>
+                    <Typography component={'span'}>
   
                     {allGames.map((game, i) => (
                       <Card className={classes.cardroot} key={game['cmid']}>
@@ -273,10 +321,10 @@ export default function Profile(props: { history: string[]; }){
                               {game['cdescription']}
                             </Typography>
                             <Box component="span" m={1} className={classes.box}>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { alert('clicked') }}>
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password']);}}>
                                 Click me
                               </Button>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteRoom();}}>
                                 Play
                               </Button>
                             </Box>
