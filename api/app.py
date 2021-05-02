@@ -4,9 +4,8 @@ from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 # Accept incoming changes
-
-# UNCOMMENT FOR HEROKU
 # from .Models.User import userModel
+# from .Models.Item import itemModel
 # from .commands import create_tables
 # from .extension import db
 
@@ -15,6 +14,7 @@ from Models.Campaign import campaignModel
 from Models.characterSheets import characterSheetModel
 from Models.Room import roomModel
 
+from Models.Item import itemModel
 from commands import create_tables
 from extension import db
 
@@ -22,7 +22,6 @@ from extension import db
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
 # testing, must install in backend env
-import flask_praetorian
 # used for authentication for login and create account
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
@@ -38,7 +37,6 @@ ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
 
 
 def create_app():
-    guard = flask_praetorian.Praetorian()
 
     app = Flask(__name__, static_folder='../build', static_url_path='/')
 
@@ -47,6 +45,7 @@ def create_app():
     #use for heroku
     app.config.from_pyfile('settings.py')
     # app.config.from_object(os.environ['APP_SETTINGS'])
+    app.config['JSON_SORT_KEYS'] = False  # to avoid sroting keys alphabetically when calling jsonify()
 
     # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     #testing
@@ -334,6 +333,19 @@ def handle_message(data):
 @token_required
 def hello(current_user):
     return jsonify("tokenized!"), 201   
+
+
+@app.route("/api/itemSearch", methods=['GET'])
+def itemSearch():
+    if request.method == 'GET':
+
+        try:
+            items_data = itemModel.query.all()
+            return jsonify([item.serialize() for item in items_data])
+
+        except Exception as item:
+            return(str(item))
+
 
 
 

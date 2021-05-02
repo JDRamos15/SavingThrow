@@ -9,6 +9,7 @@ import Login from "../Login/Login"
 import CharacterSheet from "../CharacterSheet/CharacterSheet"
 import GamePage from "../GamePage/GamePage"
 import Profile from "../Profile/Profile"
+import Items from '../Item/Item';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/profile/:username" component={Profile} />
           <Route exact path="/charactersheet" component={CharacterSheet} />
           <Route exact path="/gamePage" component={GamePage} />
+          <Route exact path="/itemSearch" component={Items} />
           <Redirect to="/" />
         </Switch>
       </Router>
