@@ -1,0 +1,9 @@
+.innerCard {
+    margin: auto;
+    width: 40%;
+    
+}
+.outerCard {
+    width: 60%;
+    height: 100%;
+}
