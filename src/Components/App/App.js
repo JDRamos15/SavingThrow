@@ -9,7 +9,7 @@ import Login from "../Login/Login"
 import CharacterSheet from "../CharacterSheet/CharacterSheet"
 import GamePage from "../GamePage/GamePage"
 import Profile from "../Profile/Profile"
-
+import JoinGame from "../Join/JoinGame"
 
 function App() {
   return (
@@ -23,7 +23,8 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/profile/:username" component={Profile} />
           <Route exact path="/charactersheet" component={CharacterSheet} />
-          <Route exact path="/gamePage" component={GamePage} />
+          <Route exact path="/gamePage/room=:room&code=:code" component={GamePage} />
+          <Route exact path="/joinGame" component={JoinGame} />
           <Redirect to="/" />
         </Switch>
       </Router>

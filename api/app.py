@@ -74,7 +74,6 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        print(request.headers)
         if 'x-Access-Token' in request.headers:
             token = request.headers['x-Access-Token']
 
@@ -272,15 +271,14 @@ def createRoom(current_user):
             gen_room = int(str(first) + ''.join(map(str, last_3)))
             checkRoom = roomModel.query.filter_by(room=gen_room).first()
             if not checkRoom:
-                new_room = roomModel(room= gen_room, isActive= True, rpassword= body['rpassword'], publicId= current_user.publicId, cmid= body['cmid'])
+                new_room = roomModel(room= gen_room, isActive= True, rpassword= body['rpassword'], publicId= current_user.publicId, cmid= body['cmid'], online_users=1)
                 db.session.add(new_room)
                 db.session.commit()
                 return jsonify({
                 'status':"Success",
-                'room' : gen_room
+                'room' : gen_room,
+                'password' : body['rpassword']
                 }), 201 
-
-
 
        
 
@@ -289,25 +287,88 @@ def createRoom(current_user):
 def deleteRoom(current_user):
     if request.method == 'DELETE':        
         # body = request.get_json()
-        deleteRoom = roomModel.query.filter_by(publicId= current_user.publicId).first()
+        deleteRoom = roomModel.query.filter_by(publicId= current_user.publicId).all()
         # deleteRoom = roomModel.query.filter_by(room= body['room']).first()
         if deleteRoom:
-            db.session.delete(deleteRoom)
-            db.session.commit()
+            for row in deleteRoom:
+                db.session.delete(row)
+                db.session.commit()
             return jsonify("Success"), 201
 
         else:
-            return jsonify("Room does not exist"), 404
+            return jsonify({'error' : "Room does not exist"}), 404
+
+
+@app.route("/api/join-room", methods=['PUT'])
+@token_required
+def joinRoom(current_user):
+    if request.method == 'PUT':        
+        body = request.get_json()
+        getRoom = roomModel.query.filter_by(room= body['room']).first()
+        if getRoom:
+            if getRoom.rpassword == body['password']:
+                getRoom.online_users = getRoom.online_users+1
+                db.session.commit()
+                return jsonify({
+                    'status': "Success",
+                    'room' : body['room'],
+                    'password' : body['password'],
+                    }), 201 
+            else:
+                return jsonify({'error': "Incorrect room or password"}), 404
+
+        else:
+            return jsonify({'error':"Room does not exist"}), 404
+
+@app.route("/api/leave-room", methods=['PUT'])
+@token_required
+def leaveRoom(current_user):
+    if request.method == 'PUT':        
+        body = request.get_json()
+        getRoom = roomModel.query.filter_by(room= body['room']).first()
+        if getRoom:
+            if getRoom.rpassword == body['code']:
+                if getRoom.publicId ==current_user.publicId:
+                    return jsonify({
+                        'status' : "Host is leaving",
+                        'room' : body['room'],
+                        'password' : body['code'],
+                        'online_users' : getRoom.online_users,
+                        'message' : " has closed the room."
+                    }), 200
+                if getRoom.online_users > 1:
+                    getRoom.online_users = getRoom.online_users-1 
+                    db.session.commit()
+                    return jsonify({
+                        'status': "Success",
+                        'room' : body['room'],
+                        'password' : body['code'],
+                        'online_users' : getRoom.online_users,
+                        'message' : " has left the room."
+                        }), 201 
+                else:
+                    return jsonify({
+                        'status' : "Room is empty",
+                        'room' : body['room'],
+                        'password' : body['code'],
+                        'online_users' : getRoom.online_users,
+                        'message' : " has closed the room."
+                    }), 200
+            else:
+                return jsonify({'error': "Incorrect room or password"}), 404
+
+        else:
+            return jsonify({'error':"Room does not exist"}), 404
 
 
 #sockets
 @socketio.on('join')
 def on_join(data):
-    print(data)
+    # print(data)
     username = data['name']
     room = data['room']
     join_room(room)
-    send(username + ' has entered the room.', to=room, broadcast=True)
+    send(username + ' has entered the room.', to=room)
 
 @socketio.on('leave')
 def on_leave(data):
@@ -315,20 +376,21 @@ def on_leave(data):
     username = data['name']
     room = data['room']
     leave_room(room)
-    send(username + ' has left the room.', to=room)
+    send(username + data['message'], to=room)
 
 @socketio.on('close')
 def on_leave(data):
-    username = data['name']
     room = data['room']
-    send(username + ' has closed the room.', to=room)
     close_room(room)
+    send(username + ' has closed the room.', to=room)
+
 
 
 @socketio.on('message')
 def handle_message(data):
-    room =data['room']
-    send(data['message'], broadcast=True, to=room)
+    room=data['room']
+    username = data['name']
+    send(username+": " + data['message'], to=room)
     
 @app.route("/api/hello")
 @token_required

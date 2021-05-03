@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "./Chat.css";
 
@@ -17,7 +18,7 @@ export default function Chat({ setMessage, sendMessage, message, leaveRoom  }: {
                     onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null}
                 />
                 <button className="btn_2" onClick={e => sendMessage(e)}>Send</button>
-                <button className="btn_1" onClick={e => leaveRoom() } >Leave Chat</button>
+                <Button className="btn_1" onClick={async() => {await leaveRoom()}}>Leave Chat</Button>
             </form>
         </div>
 
