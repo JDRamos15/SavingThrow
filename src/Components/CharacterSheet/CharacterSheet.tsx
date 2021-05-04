@@ -3,11 +3,17 @@ import { useForm } from "react-hook-form";
 import { isPropertySignature } from "typescript";
 import { login } from "../../Services/authentication";
 import { useHistory } from "react-router-dom";
+import Items from '../Item/Item';
 
 export default function CharacterSheet(props: { history: string[]; }) {
     const { register, handleSubmit, errors, } = useForm();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
+    let inventoryList: any = [];
+
+    const addInventoryList = (item: any) => {
+        inventoryList.push(item)
+    }
 
     return <form onSubmit={handleSubmit(async (data) => {
         setSubmitting(true);
@@ -17,7 +23,7 @@ export default function CharacterSheet(props: { history: string[]; }) {
         const response = await fetch("/api/create-charactersheet", {
             method: "POST",
             body: formData
-    });
+        });
         const res = await response.json();
         if (res['status'] == "Success") {
             console.log(data[0], ":Server Data");
@@ -38,9 +44,10 @@ export default function CharacterSheet(props: { history: string[]; }) {
             </ul>
         ) : null}
         <div>
-        <input ref={register} type="file"
-            name="file" />
+            <input ref={register} type="file"
+                name="file" />
             <button type="submit" > Submit file</button>
+            <Items addInventoryList={addInventoryList}></Items>
         </div>
     </form>;
 

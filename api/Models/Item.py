@@ -18,10 +18,11 @@ class itemModel(db.Model):
         self.item_effect = item_effect
         self.item_description = item_description
         self.item_damage - item_damage
-
+    
     
     def serialize(self):
         return{
+            'itid': self.itid,
             'name' : self.item_name,
             'effect' : self.item_effect,
             'description' : self.item_description,

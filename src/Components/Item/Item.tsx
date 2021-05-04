@@ -4,9 +4,11 @@ import Datatable from "./datatable"
 import Loader from "react-loader-spinner"
 
 
-export default function Items(){
+export default function Items({addInventoryList}: any){
     // Store data. Returns a tuble: (Get, Set}
+    
     const [data, setData] = useState([])
+    const [list, setList] = useState([])
     const [isLoading, setIsLoading] = useState<boolean>(true);
     // Query filter
     const [q, setQ] = useState("")
@@ -19,14 +21,15 @@ export default function Items(){
         fetch('/api/itemSearch')
         .then((response) => response.json())
         .then((json) => setData(json));
-        // setColumns(data[0] && Object.keys(data[0]))
         setIsLoading(false)
     }, []);
 
+    const addList  = (item: any) => {
+        addInventoryList(item)
+    }
 
     function search(rows: any[]){
         return rows.filter(
-            // some returns the value that matches any of the expressions
             (row) => 
             searchColumns.some((column) => row[column].toString().toLowerCase().indexOf(q.toLowerCase()) > -1)
         );
@@ -45,9 +48,8 @@ export default function Items(){
         
     }
     else{
-
         return (
-            <div>
+            <div >
                 {/* Filter */}
                 <div> 
                     {/* e -> event that happens every time a char is input
@@ -60,6 +62,7 @@ export default function Items(){
                             <input type="checkbox" checked={searchColumns.includes(column)}
                             // Changed check
                             onChange={(e) => {
+                                console.log(columns)
                                 const checked = searchColumns.includes(column)
                                 setSearchColumns(prev => checked
                                     ? prev.filter(sc => sc !== column)
@@ -72,6 +75,7 @@ export default function Items(){
                 <div>
                     <Datatable 
                     data = {search(data)}
+                    addList = {addList}
                     />
                 </div>
             </div>
