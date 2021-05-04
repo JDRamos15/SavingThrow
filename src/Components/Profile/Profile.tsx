@@ -184,10 +184,6 @@ export default function Profile(props: { history: string[]; }){
             "x-Access-Token" : `${token}`
 
         },
-        // body: JSON.stringify({
-        //   rpassword: password_,
-        //   cmid: id_
-        // })
       });
       const data = await response.json();
       console.log(data);
