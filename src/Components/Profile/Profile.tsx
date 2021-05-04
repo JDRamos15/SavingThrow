@@ -1,6 +1,7 @@
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./Profile.css";
 import React, {useEffect} from 'react';
+import {Link} from "react-router-dom";
 import {isLogged,getPublicId,getToken, logout} from "../../Services/authentication";
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -76,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-export default function Profile(props: { history: string[]; }){
+export default function Profile(props: { history: any[]; }){
     const token = getToken();
     const classes = useStyles();
     const [expandedId, setExpandedId] = React.useState(-1);   
@@ -92,7 +93,6 @@ export default function Profile(props: { history: string[]; }){
       rendered: false
     });
     const [allGames, setAllGames] = React.useState([]);
-    const [room, setRoom] = React.useState(0);
 
     async function getUser() {
       const response = await fetch('/api/user', {
@@ -135,9 +135,6 @@ export default function Profile(props: { history: string[]; }){
             "x-Access-Token" : `${token}`
 
         },
-        // body: JSON.stringify({
-        //   publicId: getPublicId(),
-        // })
       });
       const data = await response.json();
       console.log(data);
@@ -166,7 +163,13 @@ export default function Profile(props: { history: string[]; }){
         })
       });
       const data = await response.json();
-      setRoom(data);
+
+      if(data['status'] == "Success"){
+        window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
+      }else{
+        console.log("Not logged in", "room-create fail")
+      }
+
       console.log(data, "room");
 
       if(data['status'] == "Token is invalid!"){
@@ -176,24 +179,6 @@ export default function Profile(props: { history: string[]; }){
 
     }
 
-    async function deleteRoom() {
-      const response = await fetch('/api/delete-room', {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
-
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-
-      if(data['status'] == "Token is invalid!"){
-        logout();
-      }
-
-
-    }
 
 
     useEffect(() => {
@@ -312,11 +297,11 @@ export default function Profile(props: { history: string[]; }){
                             <Typography paragraph>
                               {game['cdescription']}
                             </Typography>
+                            <Typography>Entry Code</Typography> 
+                            <Typography>{game['password']}</Typography>
                             <Box component="span" m={1} className={classes.box}>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password']);}}>
-                                Click me
-                              </Button>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteRoom();}}>
+              
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
                                 Play
                               </Button>
                             </Box>
