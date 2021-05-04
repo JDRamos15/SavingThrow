@@ -1,15 +1,21 @@
 .btn_1{
+    align-items: auto;
     margin-left:10px;
-
+    padding-right: 5px;
 }
 
 .btn_2{
+    align-items: auto;
     margin-right:10px;
 }
 
+Button{
+  align-items: auto;
+  margin-right:10px;
+}
 
 .chat-form {
-    width: 400px;
+    width: 40vh;
     /* margin: 0 auto; */
     margin-right: 0;
     padding-right: 1%;

@@ -148,6 +148,8 @@ export default function Profile(props: { history: any[]; }){
 
       if(data['status'] == "Token is invalid!"){
         logout();
+        window.location.href='/'
+
       }
       if(data['status'] == "Success"){
           setAllGames(data['games']);
@@ -188,6 +190,7 @@ export default function Profile(props: { history: any[]; }){
 
       if(data['status'] == "Token is invalid!"){
         logout();
+        window.location.href='/'
       }
 
 

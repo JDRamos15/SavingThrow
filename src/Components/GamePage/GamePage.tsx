@@ -5,6 +5,8 @@ import { DefaultEventsMap } from "socket.io-client/build/typed-events";
 import "./GamePage.css";
 import {getToken, logout, getUsername} from "../../Services/authentication";
 import { useHistory, useParams } from "react-router";
+import SquareButton from "./SquareButton/SquareButton"
+import { Button, Grid } from "@material-ui/core";
 
 
 
@@ -54,12 +56,15 @@ export default function GamePage(props: { history: string[];}){
     useEffect(() => {
        if(verifyRoom){
             socket.on('close',function() {
-                window.location.href='/profile'+userName
+                window.location.href='/profile/'+userName
             });
 
             socket.on('message', message => {
                 // setMessages(messages => [...messages, message]);
                 receiveMsg(message);
+                if(message === "Close Room."){
+                    leaveRoom();
+                }
             });
          
             if (messages && fieldRef.current) {
@@ -68,7 +73,7 @@ export default function GamePage(props: { history: string[];}){
                 });
             }  
         }
-    }, []);
+    },[]);
 
 
     const sendMessage = (event: any) => {
@@ -81,6 +86,7 @@ export default function GamePage(props: { history: string[];}){
     
 
     function receiveMsg(msg: string){
+        console.log("HEREEEE")
         msgRef = msgRef.concat(msg)
         setMessages(msgRef)
     }
@@ -104,12 +110,19 @@ export default function GamePage(props: { history: string[];}){
             socket.emit('join', { name: userName, room: Number(room)});
             socket.on('message', message => {
                 receiveMsg(message);
+                if(message === "Close Room."){
+                    leaveRoom();
+                }
             });
 
         }
         if(data['error'] == "Room does not exist"){
-            window.location.href='/profile'+userName
+            window.location.href='/profile/'+userName
         }
+        if(data['status'] == "Token is invalid!"){
+            logout();
+            window.location.href='/'
+          }
 
 
 
@@ -133,7 +146,7 @@ export default function GamePage(props: { history: string[];}){
         console.log(data)
         if(data['error']){
             socket.emit('close', {name: userName, room: data.room})
-            window.location.href='/profile'+userName
+            window.location.href='/profile/'+userName
         }else{
             socket.emit('leave', { name: userName, room: Number(room), message: data['message']});
             if(data['status'] === "Host is leaving" || data['status'] === "Room is empty"){
@@ -153,19 +166,112 @@ export default function GamePage(props: { history: string[];}){
                 console.log(deleteData)
             }
         }
-        window.location.href='/profile'+userName
+        if(data['status'] == "Token is invalid!"){
+            logout();
+            window.location.href='/'
+        }
+        window.location.href='/profile/'+userName
 
         //     socket.emit('leave', { name: data.name, room: data.room  });
 
     //     socket.off();
     }
+    function getRandomInt(max: number) {
+        // if max is 3, function will return 0, 1 or 2
+        return Math.floor(Math.random() * max);
+    }
+
+    function rollDice(dice: number){
+        let diceVal = getRandomInt(dice)+1
+        socket.emit('message',{ name: userName, room: Number(room), message: "Rolled d"+ dice+ ": " + diceVal}, () => setMessage(''));
+    }
   
 
     return (
         <div>
-            <h1 className="title">Chat test</h1>
+            <h1 className="title">Campaign</h1>
+            <h3 className="room">Room: {room}</h3>
+
+ <div className="container"> 
+                <div className="box"> 
+
+                    <div className="box-row"> 
+                        <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "15vh"
+                            onClick={() => {rollDice(20)}}
+                            radius = "10%"
+                            width = "45vw"
+                            children = "d20"
+                        />  
+                    </div>
+
+                    <div className="box-row"> 
+                        <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "10vh"
+                            onClick={() => {rollDice(4)}}
+                            radius = "10%"
+                            width = "15vw"
+                            children = "d4"
+                        />
+                        <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "10vh"
+                            onClick={() => {rollDice(6)}}
+                            radius = "10%"
+                            width = "15vw"
+                            children = "d6"
+                        />
+                            <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "10vh"
+                            onClick={() => {rollDice(8)}}
+                            radius = "10%"
+                            width = "15vw"
+                            children = "d8"
+                        />
+                 
+                    </div>
+                    <div className="box-row"> 
+                        <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "10vh"
+                            onClick={() => {rollDice(10)}}
+                            radius = "10%"
+                            width = "15vw"
+                            children = "d10"
+                        />
+                        <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "10vh"
+                            onClick={() => {rollDice(12)}}
+                            radius = "10%"
+                            width = "15vw"
+                            children = "d12"
+                        />
+                        <SquareButton
+                            border="default"
+                            color="#fdffc4"
+                            height = "10vh"
+                            onClick={() => {rollDice(100)}}
+                            radius = "10%"
+                            width = "15vw"
+                            children = "d100"
+                        />
+                    </div>
+                      
+
+                            
+                </div>
+            </div>
             <div className="Chat">
-                {room}
                 <div className="fields" ref={fieldRef}>
                         {messages.map((item)=>(
                                 <div>{item}</div>
@@ -175,6 +281,8 @@ export default function GamePage(props: { history: string[];}){
 
                 <Chat message={message} setMessage={setMessage} sendMessage={sendMessage} leaveRoom={leaveRoom}/>
             </div>
+           
+            
                 
 
         </div>

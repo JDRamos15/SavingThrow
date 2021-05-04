@@ -4,8 +4,8 @@
 
 .fields {
     text-align:auto;
-    height: 300px;
-    width: 400px;
+    height: 30vh;
+    width: 45vw;
     padding: 10px;
     overflow-y: auto;
     margin-bottom: 15px;
@@ -15,3 +15,34 @@
 .title {
     text-align:center;
 }
+
+.room {
+    text-align:center;
+}
+
+.button{
+    text-align: auto;
+    max-height: 20%;
+    height: 10vh;
+    width: 15vw;
+    color: aqua;
+}
+
+.container{
+    float: left;  
+}
+
+.container .box { 
+    width:500px; 
+    display:table; 
+    
+} 
+.container .box .box-row { 
+    display:table-row; 
+} 
+
+.container .box .box-cell { 
+    display:table-cell; 
+    width:33%; 
+    padding:10px; 
+} 

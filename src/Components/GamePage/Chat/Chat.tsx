@@ -17,8 +17,8 @@ export default function Chat({ setMessage, sendMessage, message, leaveRoom  }: {
                     onChange={({ target: { value } }) => setMessage(value)}
                     onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null}
                 />
-                <button className="btn_2" onClick={e => sendMessage(e)}>Send</button>
-                <Button className="btn_1" variant="contained" onClick={async() => {await leaveRoom()}}>Leave Chat</Button>
+                <Button variant="contained" onClick={e => sendMessage(e)}>Send</Button>
+                <Button variant="contained" onClick={async() => {await leaveRoom()}}>Leave Chat</Button>
             </form>
         </div>
 
