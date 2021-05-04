@@ -69,10 +69,22 @@ export default function JoinGame(props: { history: string[]; }){
                 name="room" 
                 id="room" 
                 ref={register({
-                    required: {
-                        value: true,
-                        message: "Type in room number."
-                    }
+                    required: "required",
+                    minLength: {
+                        value: 4,
+                        message: "Must be 4 character long"
+                    },
+                    maxLength: {
+                        value: 4,
+                        message: "Must be 4 character long"
+                    },
+                    validate: (value) => {
+                        return [
+                            /[0-9]/
+                        ].every((pattern) => 
+                        pattern.test(value)) 
+                        || "Must contain only numbers";
+                    },
                     
                 })} 
             />

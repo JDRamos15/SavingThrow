@@ -26,6 +26,7 @@ function App() {
           <Route exact path="/gamePage/room=:room&code=:code" component={GamePage} />
           <Route exact path="/joinGame" component={JoinGame} />
           <Redirect to="/" />
+     
         </Switch>
       </Router>
     </React.Fragment>

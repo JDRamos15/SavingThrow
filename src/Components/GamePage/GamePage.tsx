@@ -1,17 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import openSocket, {io, Socket} from 'socket.io-client';
 import Chat from './Chat/Chat'
-import Container from '@material-ui/core/Container';
 import { DefaultEventsMap } from "socket.io-client/build/typed-events";
 import "./GamePage.css";
 import {getToken, logout, getUsername} from "../../Services/authentication";
-import { useHistory, useLocation, useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 
 
 
 
 const ENDPOINT = 'http://localhost:5000/'
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+let verifyRoom: boolean;
+
 
 
 interface ParamTypes {
@@ -36,9 +37,9 @@ export default function GamePage(props: { history: string[];}){
 
     useEffect(() => {
         console.log(code)
-        socket = io(ENDPOINT);
-        socket.emit('join', { name: userName, room: Number(room)});
-    
+        verifyRoom = false;
+        checkRoom();
+  
             // closeRoom();
 
         return () => {
@@ -51,16 +52,22 @@ export default function GamePage(props: { history: string[];}){
     }, [ENDPOINT]);
 
     useEffect(() => {
-       
-        socket.on('message', message => {
-            // setMessages(messages => [...messages, message]);
-            receiveMsg(message);
-        });
-        if (messages && fieldRef.current) {
-            fieldRef.current.scrollIntoView({
-                behavior: "smooth",
-              });
-        }  
+       if(verifyRoom){
+            socket.on('close',function() {
+                window.location.href='/profile'+userName
+            });
+
+            socket.on('message', message => {
+                // setMessages(messages => [...messages, message]);
+                receiveMsg(message);
+            });
+         
+            if (messages && fieldRef.current) {
+                fieldRef.current.scrollIntoView({
+                    behavior: "smooth",
+                });
+            }  
+        }
     }, []);
 
 
@@ -78,6 +85,38 @@ export default function GamePage(props: { history: string[];}){
         setMessages(msgRef)
     }
 
+    async function checkRoom(){
+        const response = await fetch('/api/check-room', {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "x-Access-Token" : `${token}`
+            },
+            body: JSON.stringify({
+                room: Number(room),
+                code: code
+            })
+          });
+        const data = await response.json();
+        if( data['status'] == "Success"){
+            verifyRoom = true;
+            socket = io(ENDPOINT);
+            socket.emit('join', { name: userName, room: Number(room)});
+            socket.on('message', message => {
+                receiveMsg(message);
+            });
+
+        }
+        if(data['error'] == "Room does not exist"){
+            window.location.href='/profile'+userName
+        }
+
+
+
+    }
+
+
+
     async function leaveRoom(){
         const response = await fetch('/api/leave-room', {
             method: "PUT",
@@ -92,24 +131,29 @@ export default function GamePage(props: { history: string[];}){
           });
         const data = await response.json();
         console.log(data)
-        socket.emit('leave', { name: userName, room: Number(room), message: data['message']});
-        if(data['status'] == "Host is leaving" || data['status'] == "Room is empty"){
+        if(data['error']){
             socket.emit('close', {name: userName, room: data.room})
-            const deleteResponse = await fetch('/api/delete-room', {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-Access-Token" : `${token}`
-        
-                },
-                body: JSON.stringify({
-                    room: Number(room),
-                })
-              });
-            const deleteData = await deleteResponse.json();
-            console.log(deleteData)
+            window.location.href='/profile'+userName
+        }else{
+            socket.emit('leave', { name: userName, room: Number(room), message: data['message']});
+            if(data['status'] === "Host is leaving" || data['status'] === "Room is empty"){
+                socket.emit('close', {name: userName, room: data.room})
+                const deleteResponse = await fetch('/api/delete-room', {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-Access-Token" : `${token}`
+            
+                    },
+                    body: JSON.stringify({
+                        room: Number(room),
+                    })
+                });
+                const deleteData = await deleteResponse.json();
+                console.log(deleteData)
+            }
         }
-        window.location.href='/profile'
+        window.location.href='/profile'+userName
 
         //     socket.emit('leave', { name: data.name, room: data.room  });
 

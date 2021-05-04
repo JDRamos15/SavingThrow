@@ -193,28 +193,28 @@ export default function Profile(props: { history: any[]; }){
 
     }
 
-    async function deleteRoom() {
-      const response = await fetch('/api/delete-room', {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
+    // async function deleteRoom() {
+    //   const response = await fetch('/api/delete-room', {
+    //     method: "DELETE",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "x-Access-Token" : `${token}`
 
-        },
-        // body: JSON.stringify({
-        //   rpassword: password_,
-        //   cmid: id_
-        // })
-      });
-      const data = await response.json();
-      console.log(data);
+    //     },
+    //     // body: JSON.stringify({
+    //     //   rpassword: password_,
+    //     //   cmid: id_
+    //     // })
+    //   });
+    //   const data = await response.json();
+    //   console.log(data);
 
-      if(data['status'] == "Token is invalid!"){
-        logout();
-      }
+    //   if(data['status'] == "Token is invalid!"){
+    //     logout();
+    //   }
 
 
-    }
+    // }
 
 
     useEffect(() => {
@@ -339,9 +339,6 @@ export default function Profile(props: { history: any[]; }){
               
                               <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
                                 Play
-                              </Button>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteRoom();}}>
-                                Delete
                               </Button>
                             </Box>
                           </CardContent>

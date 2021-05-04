@@ -355,10 +355,29 @@ def leaveRoom(current_user):
                         'message' : " has closed the room."
                     }), 200
             else:
-                return jsonify({'error': "Incorrect room or password"}), 404
+                return jsonify({'error': "Incorrect room or password"}), 400
 
         else:
-            return jsonify({'error':"Room does not exist"}), 404
+            return jsonify({'error':"Room does not exist"}), 400
+
+
+@app.route("/api/check-room", methods=['PUT'])
+@token_required
+def checkRoom(current_user):
+    if request.method == 'PUT':        
+        body = request.get_json()
+        getRoom = roomModel.query.filter_by(room= body['room']).first()
+        if getRoom:
+            return jsonify({
+                        'status': "Success",
+                        'room' : body['room'],
+                        'password' : body['code'],
+                        'online_users' : getRoom.online_users,
+                        }), 200
+        else:
+            return jsonify({
+                'error': "Room does not exist"
+            }), 400
 
 
 #sockets
@@ -372,7 +391,6 @@ def on_join(data):
 
 @socketio.on('leave')
 def on_leave(data):
-    print('User left!')
     username = data['name']
     room = data['room']
     leave_room(room)
@@ -381,10 +399,8 @@ def on_leave(data):
 @socketio.on('close')
 def on_leave(data):
     room = data['room']
+    send('Close Room.', to=room)
     close_room(room)
-    send(username + ' has closed the room.', to=room)
-
-
 
 @socketio.on('message')
 def handle_message(data):
