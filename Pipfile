@@ -5,14 +5,16 @@ name = "pypi"
 
 [packages]
 gunicorn = "*"
-flask-sqlalchemy = "*"
-flask-migrate = "*"
+Flask-SQLAlchemy = "*"
+Flask-Migrate = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
 flask-praetorian = "*"
-flask-cors = "*"
-flask = "*"
-flask-socketio = "*"
+Flask-Cors = "*"
+Flask = "*"
+Flask-SocketIO = "*"
+PyJWT = "*"
+pyjwt = "*"
 
 [dev-packages]
 

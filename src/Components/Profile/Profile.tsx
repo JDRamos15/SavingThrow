@@ -233,7 +233,7 @@ export default function Profile(props: { history: any[]; }){
 
 
     const games = [{ _id: "1" }, { _id: "2" }, { _id: "3" }];
-    const friends = [{ _id: "1" }, { _id: "2" }, { _id: "3" }];
+    const friends = [{ _id: "1", name : "Carlos" }, { _id: "2", name : "Miguel" }, { _id: "3", name : "Amanda" }];
 
 
     const handleExpandClick = (i: number) => {
@@ -259,6 +259,11 @@ export default function Profile(props: { history: any[]; }){
                     <Typography component={'span'}>
                       No Games     
                     </Typography>
+                    <Box component="span" m={1} className={classes.box}>
+                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
+                          Add
+                        </Button>
+                    </Box>
                   </Grid>
                 </Grid>
               </Paper>
@@ -271,6 +276,11 @@ export default function Profile(props: { history: any[]; }){
                     <Typography component={'span'}>
                       No Friends     
                     </Typography>
+                    <Box component="span" m={1} className={classes.box}>
+                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} >
+                          Add
+                        </Button>
+                    </Box>
                   </Grid>
                 </Grid>
               </Paper>
@@ -366,7 +376,7 @@ export default function Profile(props: { history: any[]; }){
   
                   {friends.map((friend, i) => (
                         <Card className={classes.cardroot} key={friend._id}>
-                          Friend
+                          {friend.name}
                           <CardContent />
                           <CardActions disableSpacing>
                             <IconButton
@@ -382,7 +392,7 @@ export default function Profile(props: { history: any[]; }){
                           </CardActions>
                           <Collapse in={expandedFriendId === i} timeout="auto" unmountOnExit>
                             <CardContent>
-                              <div>ActivitiesList</div>
+                              <div>Description:</div>
                             </CardContent>
                           </Collapse>
                         </Card>

@@ -39,7 +39,7 @@ export default function Login(props: { history: string[]; }){
             const data = await response.json();
             if (data['status'] == "Success"){
                 console.log(data)
-                console.log(data['username'])
+                console.log(data['token'])
                 login(data['loggedIn'], data['token'], data['username'], data['public_id'], data['fname'])
                 // props.history.push('/profile/'+data['username']);
                 window.location.href='/profile/'+data['username']

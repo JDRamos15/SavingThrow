@@ -75,13 +75,13 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
         if 'x-Access-Token' in request.headers:
-            token = request.headers['x-Access-Token']
-
+            token = request.headers['x-Access-Token']  
+            print(token) 
         if not token:
             return jsonify({'status' : 'Token is missing!'}), 401
 
         try: 
-            data = jwt.decode(token, app.config['SECRET_KEY'])
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS256")
             current_user = userModel.query.filter_by(publicId=data['publicId']).first()
         except:
             return jsonify({'status' : 'Token is invalid!'}), 401
@@ -113,10 +113,10 @@ def login():
             # check_password_hash(HASH_PASSWORD, REGULAR_PASSWORD)
             if check_password_hash(check, upassword):
                 # encodes publicId to create an access token to be sent to front end, current duration 8 hours(can be change to minutes=10 for testing)
-                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=8)}, app.config['SECRET_KEY'])
+                token = jwt.encode({'publicId' : user.publicId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=8)}, app.config['SECRET_KEY'], algorithm="HS256")
                 return jsonify({
                     'status' : "Success",
-                    'token' : token.decode('UTF-8'),
+                    'token' : token,
                     'username' : uusername,
                     'user_id' : user.uid,
                     'public_id' : user.publicId,
