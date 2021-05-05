@@ -6,17 +6,19 @@ from flask_sqlalchemy import SQLAlchemy
 # Accept incoming changes
 
 # UNCOMMENT FOR HEROKU
-# from .Models.User import userModel
-# from .commands import create_tables
-# from .extension import db
+from .Models.User import userModel
+from .Models.Campaign import campaignModel
+from .Models.characterSheets import characterSheetModel
+from .Models.Room import roomModel
+from .commands import create_tables
+from .extension import db
 
-from Models.User import userModel
-from Models.Campaign import campaignModel
-from Models.characterSheets import characterSheetModel
-from Models.Room import roomModel
-
-from commands import create_tables
-from extension import db
+# from Models.User import userModel
+# from Models.Campaign import campaignModel
+# from Models.characterSheets import characterSheetModel
+# from Models.Room import roomModel
+# from commands import create_tables
+# from extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
@@ -58,9 +60,6 @@ def create_app():
     migrate = Migrate(app, db)
     app.cli.add_command(create_tables)
     
-    # @app.route("/")
-    # def home():
-    #         return app.send_static_file('Home.js')
     return app
 
 app = create_app()
@@ -416,6 +415,6 @@ def hello(current_user):
 
 
 if __name__ == '__main__':
-    socketio.run(app)
-
+    # socketio.run(app)
+    app.run()
 

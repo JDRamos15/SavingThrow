@@ -1,4 +1,6 @@
-from extension import db
+# Accept current change
+from api.extension import db
+# from extension import db
  
 class characterSheetModel(db.Model):
     __tablename__ = 'charactersheet'

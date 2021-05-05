@@ -15,6 +15,7 @@ Flask = "*"
 Flask-SocketIO = "*"
 PyJWT = "*"
 pyjwt = "*"
+gevent-websocket = "*"
 
 [dev-packages]
 
