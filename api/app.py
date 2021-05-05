@@ -55,7 +55,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 app.cli.add_command(create_tables)   
 
-CORS(app)
+cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 

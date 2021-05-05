@@ -16,6 +16,7 @@ Flask-SocketIO = "*"
 PyJWT = "*"
 pyjwt = "*"
 gevent-websocket = "*"
+flask-cors = "*"
 
 [dev-packages]
 
