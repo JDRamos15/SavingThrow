@@ -16,7 +16,6 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 let verifyRoom: boolean;
 
 
-
 interface ParamTypes {
     room: string,
     code: string,
@@ -95,7 +94,7 @@ export default function GamePage(props: { history: string[];}){
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "x-Access-Token" : `${token}`
+                "x-Access-Token" : `${token}`,
             },
             body: JSON.stringify({
                 room: Number(room),

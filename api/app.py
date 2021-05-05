@@ -55,8 +55,8 @@ db.init_app(app)
 migrate = Migrate(app, db)
 app.cli.add_command(create_tables)   
 
-cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
-socketio = SocketIO(app, port=5000, host='localhost')
+# cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 # send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
@@ -372,7 +372,6 @@ def checkRoom(current_user):
 
 #sockets
 @socketio.on('join')
-@cross_origin()
 def on_join(data):
     # print(data)
     username = data['name']
@@ -381,7 +380,6 @@ def on_join(data):
     send(username + ' has entered the room.', to=room)
 
 @socketio.on('leave')
-@cross_origin()
 def on_leave(data):
     username = data['name']
     room = data['room']
@@ -389,14 +387,12 @@ def on_leave(data):
     send(username + data['message'], to=room)
 
 @socketio.on('close')
-@cross_origin()
 def on_leave(data):
     room = data['room']
     send('Close Room.', to=room)
     close_room(room)
 
 @socketio.on('message')
-@cross_origin()
 def handle_message(data):
     room=data['room']
     username = data['name']
