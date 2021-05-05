@@ -14,12 +14,7 @@ interface FormData {
 
 }
 export default function JoinGame(props: { history: string[]; }){
-    const {register, handleSubmit, errors,} = useForm<FormData>({
-        defaultValues:{
-
-            password: "enter",
-        }
-    });
+    const {register, handleSubmit, errors,} = useForm<FormData>({});
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     const token = getToken();

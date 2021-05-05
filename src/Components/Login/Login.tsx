@@ -13,12 +13,7 @@ interface FormData {
 
 }
 export default function Login(props: { history: string[]; }){
-    const {register, handleSubmit, errors,} = useForm<FormData>({
-        defaultValues:{
-            username: "bobyWillRockU",
-            password: "R0b#rt123",
-        }
-    });
+    const {register, handleSubmit, errors,} = useForm<FormData>({});
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return <form onSubmit={handleSubmit(async(formData)=>{
