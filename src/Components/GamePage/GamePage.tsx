@@ -192,7 +192,7 @@ export default function GamePage(props: { history: string[];}){
             <h1 className="title">Campaign</h1>
             <h3 className="room">Room: {room}</h3>
 
- <div className="container"> 
+        <div className="container"> 
                 <div className="box"> 
 
                     <div className="box-row"> 
@@ -202,7 +202,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "15vh"
                             onClick={() => {rollDice(20)}}
                             radius = "10%"
-                            width = "45vw"
+                            width = "30vw"
                             children = "d20"
                         />  
                     </div>
@@ -214,7 +214,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "10vh"
                             onClick={() => {rollDice(4)}}
                             radius = "10%"
-                            width = "15vw"
+                            width = "10vw"
                             children = "d4"
                         />
                         <SquareButton
@@ -223,7 +223,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "10vh"
                             onClick={() => {rollDice(6)}}
                             radius = "10%"
-                            width = "15vw"
+                            width = "10vw"
                             children = "d6"
                         />
                             <SquareButton
@@ -232,7 +232,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "10vh"
                             onClick={() => {rollDice(8)}}
                             radius = "10%"
-                            width = "15vw"
+                            width = "10vw"
                             children = "d8"
                         />
                  
@@ -244,7 +244,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "10vh"
                             onClick={() => {rollDice(10)}}
                             radius = "10%"
-                            width = "15vw"
+                            width = "10vw"
                             children = "d10"
                         />
                         <SquareButton
@@ -253,7 +253,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "10vh"
                             onClick={() => {rollDice(12)}}
                             radius = "10%"
-                            width = "15vw"
+                            width = "10vw"
                             children = "d12"
                         />
                         <SquareButton
@@ -262,7 +262,7 @@ export default function GamePage(props: { history: string[];}){
                             height = "10vh"
                             onClick={() => {rollDice(100)}}
                             radius = "10%"
-                            width = "15vw"
+                            width = "10vw"
                             children = "d100"
                         />
                     </div>
@@ -280,9 +280,7 @@ export default function GamePage(props: { history: string[];}){
                 </div>
 
                 <Chat message={message} setMessage={setMessage} sendMessage={sendMessage} leaveRoom={leaveRoom}/>
-            </div>
-           
-            
+            </div>        
                 
 
         </div>

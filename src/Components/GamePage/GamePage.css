@@ -1,11 +1,12 @@
 .Chat {
     align-items: auto;
+    
 }
 
 .fields {
     text-align:auto;
     height: 30vh;
-    width: 45vw;
+    width: 22vw;
     padding: 10px;
     overflow-y: auto;
     margin-bottom: 15px;
@@ -33,7 +34,7 @@
 }
 
 .container .box { 
-    width:500px; 
+    width:35vw; 
     display:table; 
     
 } 
