@@ -17,7 +17,15 @@ interface FormData {
 
 }
 export default function CreateAccount(props: { history: string[]; }){
-    const {register, handleSubmit, errors,} = useForm<FormData>({});
+    const {register, handleSubmit, errors,} = useForm<FormData>({
+        defaultValues:{
+            first_name: "",
+            last_name: "",
+            username: "",
+            email: "",
+            password: "",
+        }
+    });
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return <form onSubmit={handleSubmit(async(formData)=>{
