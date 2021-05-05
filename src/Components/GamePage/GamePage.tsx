@@ -38,7 +38,6 @@ export default function GamePage(props: { history: string[];}){
     // const state: any = history.location.state
 
     useEffect(() => {
-        console.log(code)
         verifyRoom = false;
         checkRoom();
   
