@@ -11,7 +11,7 @@ import { Button, Grid } from "@material-ui/core";
 
 
 
-const ENDPOINT = 'http://localhost:5000/'
+const ENDPOINT = 'https://saving-throw.herokuapp.com/'
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 let verifyRoom: boolean;
 
