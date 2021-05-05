@@ -31,7 +31,6 @@ import jwt
 from functools import wraps
 from flask_socketio import SocketIO, join_room, leave_room, send, close_room
 import random
-from flask.ext.cors import cross_origin
 
 UPLOAD_FOLDER = './media'
 ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
