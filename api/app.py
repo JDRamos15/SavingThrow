@@ -22,7 +22,7 @@ from .extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 # testing, must install in backend env
 # used for authentication for login and create account
 from werkzeug.security import generate_password_hash, check_password_hash
