@@ -56,7 +56,7 @@ migrate = Migrate(app, db)
 app.cli.add_command(create_tables)   
 
 cors = CORS(app,resources={r"/api/*":{"origins":"*"}})
-socketio = SocketIO(app, cors_allowed_origins="*", port=5000, host='localhost')
+socketio = SocketIO(app, port=5000, host='localhost')
 
 
 # send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
