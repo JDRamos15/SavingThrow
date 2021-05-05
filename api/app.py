@@ -57,7 +57,6 @@ app.cli.add_command(create_tables)
 
 cors = CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
-print(socketio)
 
 # send x-access-token with the value of the token stored in the front end as a parameter in the POST method when calling a 
 # route that requires a user to be signed in.
