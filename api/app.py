@@ -31,6 +31,7 @@ import jwt
 from functools import wraps
 from flask_socketio import SocketIO, join_room, leave_room, send, close_room
 import random
+from flask.ext.cors import cross_origin
 
 UPLOAD_FOLDER = './media'
 ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
@@ -372,6 +373,7 @@ def checkRoom(current_user):
 
 #sockets
 @socketio.on('join')
+@cross_origin()
 def on_join(data):
     # print(data)
     username = data['name']
@@ -380,6 +382,7 @@ def on_join(data):
     send(username + ' has entered the room.', to=room)
 
 @socketio.on('leave')
+@cross_origin()
 def on_leave(data):
     username = data['name']
     room = data['room']
@@ -387,12 +390,14 @@ def on_leave(data):
     send(username + data['message'], to=room)
 
 @socketio.on('close')
+@cross_origin()
 def on_leave(data):
     room = data['room']
     send('Close Room.', to=room)
     close_room(room)
 
 @socketio.on('message')
+@cross_origin()
 def handle_message(data):
     room=data['room']
     username = data['name']
@@ -406,6 +411,6 @@ def hello(current_user):
 
 
 if __name__ == '__main__':
-    socketio.run(app)
-    # app.run()
+    # socketio.run(app)
+    app.run()
 
