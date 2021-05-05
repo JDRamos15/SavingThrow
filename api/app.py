@@ -24,7 +24,6 @@ from .extension import db
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
 from flask_cors import CORS
 # testing, must install in backend env
-import flask_praetorian
 # used for authentication for login and create account
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
@@ -39,30 +38,23 @@ ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
 
 
 
-def create_app():
-    guard = flask_praetorian.Praetorian()
+app = Flask(__name__, static_folder='../build', static_url_path='/')
 
-    app = Flask(__name__, static_folder='../build', static_url_path='/')
+# app.config.from_object('config.ProductionConfig')
 
-    # app.config.from_object('config.ProductionConfig')
+#use for heroku
+app.config.from_pyfile('settings.py')
+# app.config.from_object(os.environ['APP_SETTINGS'])
 
-    #use for heroku
-    app.config.from_pyfile('settings.py')
-    # app.config.from_object(os.environ['APP_SETTINGS'])
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#testing
 
-    # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    #testing
-   
 
-    db.init_app(app)
-    
+db.init_app(app)
 
-    migrate = Migrate(app, db)
-    app.cli.add_command(create_tables)
-    
-    return app
+migrate = Migrate(app, db)
+app.cli.add_command(create_tables)   
 
-app = create_app()
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -75,7 +67,6 @@ def token_required(f):
         token = None
         if 'x-Access-Token' in request.headers:
             token = request.headers['x-Access-Token']  
-            print(token) 
         if not token:
             return jsonify({'status' : 'Token is missing!'}), 401
 
