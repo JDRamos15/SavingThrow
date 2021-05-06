@@ -157,7 +157,7 @@ export default function Profile(props: { history: any[]; }){
     }
 
     async function createRoom(id_: number, password_: string) {
-      deleteOldRooms()
+      await deleteOldRooms()
       const response = await fetch('/api/create-room', {
         method: "POST",
         headers: {
