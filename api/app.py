@@ -5,27 +5,27 @@ from flask_sqlalchemy import SQLAlchemy
 # Accept incoming changes
 
 # UNCOMMENT FOR HEROKU
-from .Models.User import userModel
-from .Models.Campaign import campaignModel
-from .Models.characterSheets import characterSheetModel
-from .Models.Room import roomModel
-from .Models.Character import characterModel
-from .Models.Inventory import inventoryModel
-from .Models.Item import itemModel
+# from .Models.User import userModel
+# from .Models.Campaign import campaignModel
+# from .Models.characterSheets import characterSheetModel
+# from .Models.Room import roomModel
+# from .Models.Character import characterModel
+# from .Models.Inventory import inventoryModel
+# from .Models.Item import itemModel
 
-from .commands import create_tables
-from .extension import db
+# from .commands import create_tables
+# from .extension import db
 
-# from Models.User import userModel
-# from Models.Campaign import campaignModel
-# from Models.characterSheets import characterSheetModel
-# from Models.Room import roomModel
-# from Models.Character import characterModel
-# from Models.Inventory import inventoryModel
-# from Models.Item import itemModel
+from Models.User import userModel
+from Models.Campaign import campaignModel
+from Models.characterSheets import characterSheetModel
+from Models.Room import roomModel
+from Models.Character import characterModel
+from Models.Inventory import inventoryModel
+from Models.Item import itemModel
 
-# from commands import create_tables
-# from extension import db
+from commands import create_tables
+from extension import db
 
 
 #testing, Used for cross-origin requests. Basically lets you call the endpoints from a different system without violating security
@@ -201,8 +201,12 @@ def createGame(current_user):
         new_campaign = campaignModel(cname=name, dm_uid=dm_uid, cdescription=description,start_date=start_date,looking_for=looking_for,date_updated=date_updated,password=password,ccapacity=ccapacity)
         db.session.add(new_campaign)
         db.session.commit()
+        response = {
+                    'status' : "Success",
+                    'cmid' : new_campaign.cmid
+                    }
+        return jsonify(response), 201
 
-        return jsonify("Success"), 201
     return jsonify({'error' : "Method is not POST"}), 404
 
 
@@ -274,20 +278,23 @@ def getCharacter():
 def createCharacter(current_user):
     if request.method == 'POST': 
         body = request.get_json()
-        cmid = 1
+        cmid = body['cmid']
         user_uid = current_user.publicId
         cs_csid = body['csid']
         new_character=characterModel(cmid, user_uid, cs_csid)
         db.session.add(new_character)
         db.session.commit()
         items = body['inventoryList']
-        for i in items:
+        for item in items:
             new_inventory = inventoryModel(new_character.cid, item['itid'])
             db.session.add(new_inventory)
         db.session.flush()
         db.session.commit()
-
-        return make_response(jsonify("Character already exist", 200))
+        response = {
+                'status' : "Success",
+                'message' : "Character created succesfully"
+                }
+        return jsonify(response), 201
 
 
 def allowed_file(filename):
@@ -308,15 +315,21 @@ def createCharacterSheet(current_user):
             date_created = datetime.datetime.now().replace(microsecond=0)
             date_updated = datetime.datetime.now().replace(microsecond=0)
             s3_client = boto3.client('s3')
-            upload_aws = s3_client.generate_presigned_post(app.config['S3_BUCKET'], cs_path,    Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
+            upload_aws = s3_client.generate_presigned_post(S3_BUCKET, cs_path,    Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
             new_characterSheet = characterSheetModel(user_id=user_uid, cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
             db.session.add(new_characterSheet)
             db.session.commit()
-            response = {
-                    'status' : "Success",
-                    'csid' : new_characterSheet.csid
+        response = {
+                'status' : "Success",
+                'csid' : 23
+                }
+        return jsonify(response), 201
+    else:
+        response = {
+                    'status' : "Failed",
+                    'error' : 'Wrong type of method'
                     }
-            return make_response(jsonify(response), 201)
+        return jsonify(response), 405
 
 @app.route("/api/create-room", methods=['POST'])
 @token_required

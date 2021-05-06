@@ -14,6 +14,7 @@ interface FormData {
     password: string;
     capacity: number;
 }
+
 export default function CreateGame(props: { history: string[]; }) {
     const { register, handleSubmit, errors, } = useForm<FormData>({
     });
@@ -27,7 +28,6 @@ export default function CreateGame(props: { history: string[]; }) {
         setSubmitting(true);
         setServerErrors([]);
 
-        console.log(getPublicId())
         const response = await fetch("/api/create-game", {
             method: "POST",
             headers: {
@@ -46,9 +46,8 @@ export default function CreateGame(props: { history: string[]; }) {
 
         });
         const data = await response.json();
-        if (data == "Success"){
-            console.log(data[0], ":Server Data");
-            props.history.push('/profile/'+getUsername());
+        if (data['status'] == "Success"){
+            props.history.push('/charactersheet/'+data['cmid']);
         }
         else
             console.log("Wrong");

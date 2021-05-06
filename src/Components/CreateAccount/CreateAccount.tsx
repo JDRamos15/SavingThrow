@@ -29,7 +29,6 @@ export default function CreateAccount(props: { history: string[]; }) {
                         <Card>
                             <Card.Body>
                                 <form onSubmit={handleSubmit(async (formData) => {
-                                    console.log(formData, "formData");
 
                                     const response = await fetch("api/create", {
                                         method: "POST",
@@ -58,7 +57,6 @@ export default function CreateAccount(props: { history: string[]; }) {
                                         });
                                         const logIndata = await logInresponse.json();
                                         if (logIndata['status'] == "Success") {
-                                            console.log(logIndata)
                                             login(logIndata['loggedIn'], logIndata['token'], logIndata['username'], logIndata['public_id'], logIndata['fname'])
                                             props.history.push('/profile/' + logIndata['username']);
                                         }

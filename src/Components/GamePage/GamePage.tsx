@@ -38,7 +38,6 @@ export default function GamePage(props: { history: string[];}){
   
 
         return () => {
-            console.log('here')
         };
 
     }, [ENDPOINT]);
@@ -75,7 +74,6 @@ export default function GamePage(props: { history: string[];}){
     
 
     function receiveMsg(msg: string){
-        console.log("HEREEEE")
         msgRef = msgRef.concat(msg)
         setMessages(msgRef)
     }
@@ -132,7 +130,6 @@ export default function GamePage(props: { history: string[];}){
             })
           });
         const data = await response.json();
-        console.log(data)
         if(data['error']){
             socket.emit('close', {name: userName, room: data.room})
             window.location.href='/profile/'+userName
@@ -152,7 +149,6 @@ export default function GamePage(props: { history: string[];}){
                     })
                 });
                 const deleteData = await deleteResponse.json();
-                console.log(deleteData)
             }
         }
         if(data['status'] == "Token is invalid!"){

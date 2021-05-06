@@ -62,7 +62,6 @@ export default function Items({addInventoryList}: any){
                             <input type="checkbox" checked={searchColumns.includes(column)}
                             // Changed check
                             onChange={(e) => {
-                                console.log(columns)
                                 const checked = searchColumns.includes(column)
                                 setSearchColumns(prev => checked
                                     ? prev.filter(sc => sc !== column)

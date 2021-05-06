@@ -110,7 +110,6 @@ export default function Profile(props: { history: any[]; }){
         }
       });
       const users = await response.json();
-      console.log(users);
 
       if(users['status'] == "Token is invalid!"){
         logout();
@@ -144,7 +143,6 @@ export default function Profile(props: { history: any[]; }){
         },
       });
       const data = await response.json();
-      console.log(data);
 
       if(data['status'] == "Token is invalid!"){
         logout();
@@ -179,7 +177,6 @@ export default function Profile(props: { history: any[]; }){
         console.log("Not logged in", "room-create fail")
       }
 
-      console.log(data, "room");
 
       if(data['status'] == "Token is invalid!"){
         logout();
@@ -199,7 +196,6 @@ export default function Profile(props: { history: any[]; }){
 
     useEffect(() => {
       getAllCampaigns();
-      console.log(allGames)
     },[]);
 
 

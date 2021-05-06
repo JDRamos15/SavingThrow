@@ -19,7 +19,7 @@ export default function Login(props: { history: string[]; }) {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return (
-        <div className="d-flex justify-content-center ">
+        <div className="d-flex justify-content-center">
             <div >
                 <Card bg='info' style={{width: '20vw', height: '38vh', paddingTop: '3vh'}}>
                     <div className="d-flex justify-content-center">
