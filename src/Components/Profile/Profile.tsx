@@ -1,7 +1,7 @@
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./Profile.css";
 import React, {useEffect} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {isLogged,getPublicId,getToken, logout} from "../../Services/authentication";
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -79,6 +79,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface ParamTypes {
+  username: string
+}
+
 
 
 export default function Profile(props: { history: any[]; }){
@@ -97,10 +101,12 @@ export default function Profile(props: { history: any[]; }){
       rendered: false
     });
     const [allGames, setAllGames] = React.useState([]);
+    let {username} = useParams<ParamTypes>();
+
 
     async function getUser() {
       const response = await fetch('/api/user', {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
             "x-Access-Token" : `${token}`
@@ -117,6 +123,9 @@ export default function Profile(props: { history: any[]; }){
         logout();
       }
       else{
+        if(users['username'] != username){
+          window.location.href="/profile/"+users['username']
+        }
         setUserProfile({
           data: {
             username: users['username'],
@@ -128,6 +137,7 @@ export default function Profile(props: { history: any[]; }){
           rendered: true
         });
       }
+
 
     }
 
@@ -196,28 +206,6 @@ export default function Profile(props: { history: any[]; }){
 
     }
 
-    // async function deleteRoom() {
-    //   const response = await fetch('/api/delete-room', {
-    //     method: "DELETE",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "x-Access-Token" : `${token}`
-
-    //     },
-    //     // body: JSON.stringify({
-    //     //   rpassword: password_,
-    //     //   cmid: id_
-    //     // })
-    //   });
-    //   const data = await response.json();
-    //   console.log(data);
-
-    //   if(data['status'] == "Token is invalid!"){
-    //     logout();
-    //   }
-
-
-    // }
 
 
     useEffect(() => {

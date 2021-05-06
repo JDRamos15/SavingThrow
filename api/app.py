@@ -89,9 +89,9 @@ def index():
     return app.send_static_file('index.html')
 
 
-@app.route("/api/login", methods=['GET', 'POST'])
+@app.route("/api/login", methods=['GET'])
 def login():
-    if request.method == 'POST':
+    if request.method == 'GET':
         body = request.get_json()     
         uusername = body['username']
         upassword = body['password']
@@ -119,7 +119,7 @@ def login():
             return jsonify({'error' : "Incorrect email or password"}), 404
 
     
-    return "Method is not POST"
+    return jsonify('error' : "Method is not GET"), 404
 
 
 @app.route("/api/create", methods=['GET','POST'])
@@ -147,12 +147,14 @@ def createUser():
             'error' : "Email or Username already in use."
         }), 401
         # jsonify("Email or Username already is use"), 400
+    return jsonify('error' : "Method is not GET or POST"), 404
 
 
-@app.route("/api/user", methods=['POST', 'GET'])
+
+@app.route("/api/user", methods=['GET'])
 @token_required
 def getUser(current_user):
-    if request.method == 'POST':
+    if request.method == 'GET':
         body = request.get_json()
         publicid = body['publicId'].replace('"', '')
         checkPublicId = userModel.query.filter_by(publicId=publicid).first()
@@ -167,6 +169,8 @@ def getUser(current_user):
                     'fname': checkPublicId.ufirst_name,
                     'lname': checkPublicId.ulast_name
                     }), 200
+    return jsonify('error' : "Method is not GET"), 404
+
 
 @app.route("/api/create-game", methods=['POST'])
 @token_required
@@ -191,6 +195,8 @@ def createGame(current_user):
         db.session.commit()
 
         return jsonify("Success"), 201
+    return jsonify('error' : "Method is not POST"), 404
+
 
 @app.route("/api/getgames", methods=['GET'])
 @token_required
@@ -215,17 +221,22 @@ def getGames(current_user):
 
         return jsonify({'status': "Success",
                         'games' : result}), 201
+
+    return jsonify('error' : "Method is not GET"), 404
+
     
-@app.route("/api/delete-game", methods=['POST'])
+@app.route("/api/delete-game", methods=['DELETE'])
 @token_required
 def deleteGame(current_user):
-    if request.method == 'POST':        
+    if request.method == 'DELETE':        
         body = request.get_json()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
         db.session.delete(campaignToDelete)
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
+    return jsonify('error' : "Method is not DELETE"), 404
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -246,6 +257,8 @@ def createCharacterSheet():
             db.session.add(new_characterSheet)
             db.session.commit()
             return make_response(jsonify("Success", 201))
+    return jsonify('error' : "Method is not POST"), 404
+
 
 @app.route("/api/create-room", methods=['POST'])
 @token_required
@@ -269,6 +282,8 @@ def createRoom(current_user):
                 'room' : gen_room,
                 'password' : body['rpassword']
                 }), 201 
+    return jsonify('error' : "Method is not POST"), 404
+
 
        
 
@@ -287,6 +302,9 @@ def deleteRoom(current_user):
 
         else:
             return jsonify({'error' : "Room does not exist"}), 404
+
+    return jsonify('error' : "Method is not DELETE"), 404
+
 
 
 @app.route("/api/join-room", methods=['PUT'])
@@ -309,6 +327,9 @@ def joinRoom(current_user):
 
         else:
             return jsonify({'error':"Room does not exist"}), 404
+
+    return jsonify('error' : "Method is not PUT"), 404
+
 
 @app.route("/api/leave-room", methods=['PUT'])
 @token_required
@@ -349,12 +370,14 @@ def leaveRoom(current_user):
 
         else:
             return jsonify({'error':"Room does not exist"}), 400
+    return jsonify('error' : "Method is not PUT"), 404
 
 
-@app.route("/api/check-room", methods=['PUT'])
+
+@app.route("/api/check-room", methods=['GET'])
 @token_required
 def checkRoom(current_user):
-    if request.method == 'PUT':        
+    if request.method == 'GET':        
         body = request.get_json()
         getRoom = roomModel.query.filter_by(room= body['room']).first()
         if getRoom:
@@ -368,6 +391,8 @@ def checkRoom(current_user):
             return jsonify({
                 'error': "Room does not exist"
             }), 400
+    return jsonify('error' : "Method is not GET"), 404
+
 
 
 #sockets

@@ -22,7 +22,7 @@ export default function Login(props: { history: string[]; }){
             console.log(formData, "formData");
             
             const response = await fetch("/api/login", {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 },
