@@ -248,9 +248,9 @@ def deleteGame(current_user):
     return jsonify({'error' : "Method is not DELETE"}), 404
 
 
-@app.route("/api/get-character", methods=['GET'])
+@app.route("/api/get-character", methods=['PUT'])
 def getCharacter():
-    if request.method == 'GET': 
+    if request.method == 'PUT': 
         body = request.get_json()
         getRoom = roomModel.query.filter_by(room= body['room'], password=body['password']).first()
         if getRoom is None:
@@ -461,7 +461,7 @@ def checkRoom(current_user):
                         }), 200
         else:
             return jsonify({
-                'error': "Room does not exist"
+                'error': "Incorrect room or password"
             }), 400
     return jsonify({'error' : "Method is not GET"}), 404
 

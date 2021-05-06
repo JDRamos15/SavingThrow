@@ -157,6 +157,7 @@ export default function Profile(props: { history: any[]; }){
     }
 
     async function createRoom(id_: number, password_: string) {
+      await deleteOldRooms()
       const response = await fetch('/api/create-room', {
         method: "POST",
         headers: {
@@ -180,6 +181,19 @@ export default function Profile(props: { history: any[]; }){
         window.location.href='/'
       }
 
+
+    }
+
+    async function deleteOldRooms() {
+      const response = await fetch('/api/delete-room', {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
+        },
+      });
+      const data = await response.json();
 
     }
 
