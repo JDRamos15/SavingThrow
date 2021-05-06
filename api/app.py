@@ -241,7 +241,7 @@ def deleteGame(current_user):
         db.session.delete(campaignToDelete)
         db.session.commit()
 
-        return jsonify('status' : "Success"), 200
+        return jsonify({'status' : "Success"}), 200
     return jsonify({'error' : "Method is not DELETE"}), 404
 
 
