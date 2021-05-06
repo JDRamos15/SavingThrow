@@ -237,7 +237,7 @@ def getGames(current_user):
 def deleteGame(current_user):
     if request.method == 'DELETE':        
         body = request.get_json()
-        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid'], password=['rpassword']).first()
+        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid'], password=body['rpassword']).first()
         db.session.delete(campaignToDelete)
         db.session.commit()
 

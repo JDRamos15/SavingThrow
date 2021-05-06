@@ -2,7 +2,7 @@
 import "./Profile.css";
 import React, {useEffect} from 'react';
 import {Link, useParams} from "react-router-dom";
-import {isLogged,getPublicId,getToken, logout} from "../../Services/authentication";
+import {isLogged,getUsername,getToken, logout} from "../../Services/authentication";
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -202,6 +202,9 @@ export default function Profile(props: { history: any[]; }){
 
       if(data['status'] == "Token is invalid!"){
         logout();
+      }
+      if(data['status'] == "Success"){
+        window.location.href="/profile/"+getUsername()
       }
 
 
