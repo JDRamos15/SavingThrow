@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from extension import db
-=======
 from api.extension import db
->>>>>>> 0ba4bf422bfb94a9baa5e0ed3940120b20373c9d
  
 class characterModel(db.Model):
     __tablename__ = 'character'
