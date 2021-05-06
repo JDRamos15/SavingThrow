@@ -184,8 +184,8 @@ export default function Profile(props: { history: any[]; }){
     }
 
 
-    async function deleteRoom(id_: number, password_: string) {
-      const response = await fetch('/api/delete-room', {
+    async function deleteCampaign(id_: number, password_: string) {
+      const response = await fetch('/api/delete-game', {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -344,7 +344,7 @@ export default function Profile(props: { history: any[]; }){
                               <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
                                 Play
                               </Button>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteRoom(game['cmid'], game['password'])}}>                      
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteCampaign(game['cmid'], game['password'])}}>                      
                                 Delete
                               </Button>
                             </Box>
