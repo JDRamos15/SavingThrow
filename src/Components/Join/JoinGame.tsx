@@ -23,26 +23,24 @@ export default function JoinGame(props: { history: string[]; }){
             setSubmitting(true);
             setServerErrors([]);
             
-            // const response = await fetch("api/get-character", {
-            //     method: "PUT",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //         "x-Access-Token" : `${token}`
-            //     },
-            //     body: JSON.stringify({
-            //         room: formData.room,
-            //         password: formData.password
-            //     })
-            // });
-            // const data = await response.json();
-            // if(data['status'] == "Token is invalid!"){
-            //     window.location.href='/'
-            // }
-            // if(data['status'] == 'Does not exist'){
-            //     window.location.href="/charactersheet/"+data['cmid']
-            // }
-            // if(data['status'] == 'Character exists'){
-                const response = await fetch("api/join-room", {
+            const response = await fetch("api/get-character", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-Access-Token" : `${token}`
+                },
+                body: JSON.stringify({
+                    room: formData.room,
+                    password: formData.password
+                })
+            });
+            const data = await response.json();
+            
+            if(data['status'] == "Does not exist"){
+                window.location.href="/charactersheet/"+data['cmid']
+            }
+            if(data['status'] == 'Character exists'){
+                const join_response = await fetch("api/join-room", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -53,16 +51,18 @@ export default function JoinGame(props: { history: string[]; }){
                         password: formData.password,
                     })
                 });
-                const data = await response.json();
-                if (data['status'] == "Success"){
+                const room_data = await join_response.json();
+                if (room_data['status'] == "Success"){
                     window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
                 }
                 else
                     setServerErrors([data['error']]);
-            // }
-            // else
-                    // setServerErrors([data['error']]);
-
+            }
+            if(data['status'] == "Token is invalid!"){
+                window.location.href='/'
+            }
+            else
+                setServerErrors([data['error']]);
             setSubmitting(false);
         })}>
             {serverErrors ? (

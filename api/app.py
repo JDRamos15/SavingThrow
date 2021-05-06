@@ -249,26 +249,27 @@ def deleteGame(current_user):
 
 
 @app.route("/api/get-character", methods=['PUT'])
-def getCharacter():
+@token_required
+def getCharacter(current_user):
     if request.method == 'PUT': 
         body = request.get_json()
-        getRoom = roomModel.query.filter_by(room= body['room'], password=body['password']).first()
+        getRoom = roomModel.query.filter_by(room= body['room'], rpassword=body['password']).first()
         if getRoom is None:
-            return jsonify({'error': "Error: Wrong room or password"}, 404)
+            return jsonify({'error': "Error: Wrong room or password"}), 404
         user_uid = current_user.publicId
         cmid = getRoom.cmid
-        checkCampaignCharacter = character.query.filter_by(campaign_cmid=cmid, user_uid=user_uid).first()
+        checkCampaignCharacter = characterModel.query.filter_by(campaign_cmid=cmid, user_uid=user_uid).first()
         if checkCampaignCharacter is None:
             response = {
                     'status' : "Does not exist",
                     'cmid': cmid
                     }
-            return jsonify(response, 404)
+            return jsonify(response), 404
         response = {
                     'status' : "Character exists",
                     'cid': checkCampaignCharacter.cid
                     }
-        return jsonify(response, 201)
+        return jsonify(response), 201
 
 
 
