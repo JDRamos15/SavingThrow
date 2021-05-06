@@ -46,11 +46,7 @@ S3_BUCKET = os.environ.get('S3_BUCKET')
 
 
 
-<<<<<<< HEAD
 app = Flask(__name__, static_folder='../build', static_url_path='/')
-=======
-def create_app():
->>>>>>> origin/codeCleanUp
 
 # app.config.from_object('config.ProductionConfig')
 
@@ -58,23 +54,15 @@ def create_app():
 app.config.from_pyfile('settings.py')
 # app.config.from_object(os.environ['APP_SETTINGS'])
 
-<<<<<<< HEAD
+#use for heroku
+app.config.from_pyfile('settings.py')
+# app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['JSON_SORT_KEYS'] = False  # to avoid sroting keys alphabetically when calling jsonify()
+
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #testing
-
-
 db.init_app(app)
-=======
-    #use for heroku
-    app.config.from_pyfile('settings.py')
-    # app.config.from_object(os.environ['APP_SETTINGS'])
-    app.config['JSON_SORT_KEYS'] = False  # to avoid sroting keys alphabetically when calling jsonify()
-
-    # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    #testing
-    db.init_app(app)
     
->>>>>>> origin/codeCleanUp
 
 migrate = Migrate(app, db)
 app.cli.add_command(create_tables)   
@@ -324,17 +312,11 @@ def createCharacterSheet(current_user):
             new_characterSheet = characterSheetModel(user_id=user_uid, cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
             db.session.add(new_characterSheet)
             db.session.commit()
-<<<<<<< HEAD
-            return make_response(jsonify("Success", 201))
-    return jsonify({'error' : "Method is not POST"}), 404
-
-=======
             response = {
                     'status' : "Success",
                     'csid' : new_characterSheet.csid
                     }
             return make_response(jsonify(response), 201)
->>>>>>> origin/codeCleanUp
 
 @app.route("/api/create-room", methods=['POST'])
 @token_required

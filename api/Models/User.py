@@ -1,13 +1,7 @@
 # Accept current change
-<<<<<<< HEAD
 from api.extension import db
 
 # from extension import db
-=======
-# from api.extension import db
-from extension import db
-
->>>>>>> origin/codeCleanUp
   
 class userModel(db.Model):
     __tablename__ = 'users'
