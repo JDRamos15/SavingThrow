@@ -57,7 +57,7 @@ export default function CreateAccount(props: { history: string[]; }){
                 if (logIndata['status'] == "Success"){
                     console.log(logIndata)
                     login(logIndata['loggedIn'], logIndata['token'], logIndata['username'], logIndata['public_id'], logIndata['fname'])
-                    props.history.push('/profile/'+logIndata['username']);
+                    window.location.href='/profile/'+logIndata['username']
                 }
             }
             else
