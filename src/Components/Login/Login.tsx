@@ -63,7 +63,7 @@ export default function Login(props: { history: string[]; }) {
                                         <h1>Login</h1>
                                         <label htmlFor="username"> Username</label>
                                         <input
-                                            type="username"
+                                            type="text"
                                             name="username"
                                             id="username"
                                             ref={register({
@@ -78,7 +78,7 @@ export default function Login(props: { history: string[]; }) {
                                     <div>
                                         <label htmlFor="password"> Password</label>
                                         <input
-                                            type="password"
+                                            type="text"
                                             name="password"
                                             id="password"
                                             ref={register({ required: "required" })}

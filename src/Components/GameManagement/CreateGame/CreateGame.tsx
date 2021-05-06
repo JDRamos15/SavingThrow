@@ -128,19 +128,14 @@ export default function CreateGame(props: { history: string[]; }) {
                 type="number"
                 name="capacity"
                 id="capacity"
+                min = "3"
+                max = "8"
                 ref={register({
                     required: {
                         value: true,
                         message: "Please enter your campaign capacity"
-                    },minLength: {
-                        value: 1,
-                        message: "Must be 1 character long"
                     },
-                    maxLength: {
-                        value: 1,
-                        message: "Must be 1 character long"
-                    },
-                      validate: (value) => {
+                    validate: (value) => {
                         return [
                             /[0-9]/
                         ].every((pattern) => 
