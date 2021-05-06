@@ -202,7 +202,7 @@ def createGame(current_user):
         db.session.add(new_campaign)
         db.session.commit()
 
-        return jsonify("Success"), 201
+        return jsonify({'status': "Success"}), 201
     return jsonify({'error' : "Method is not POST"}), 404
 
 

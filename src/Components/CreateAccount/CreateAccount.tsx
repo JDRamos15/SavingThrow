@@ -58,9 +58,8 @@ export default function CreateAccount(props: { history: string[]; }) {
                                         });
                                         const logIndata = await logInresponse.json();
                                         if (logIndata['status'] == "Success") {
-                                            console.log(logIndata)
                                             login(logIndata['loggedIn'], logIndata['token'], logIndata['username'], logIndata['public_id'], logIndata['fname'])
-                                            props.history.push('/profile/' + logIndata['username']);
+                                            window.location.href = '/profile/' + data['username']
                                         }
                                     }
                                     else

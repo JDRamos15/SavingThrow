@@ -2,7 +2,7 @@
 import { Switch } from "@material-ui/core";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { getPublicId, getToken, getUsername } from "../../../Services/authentication";
+import { getPublicId, getToken, getUsername, logout } from "../../../Services/authentication";
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./CreateGame.css";
 
@@ -46,12 +46,17 @@ export default function CreateGame(props: { history: string[]; }) {
 
         });
         const data = await response.json();
-        if (data == "Success"){
-            console.log(data[0], ":Server Data");
-            props.history.push('/profile/'+getUsername());
+        if(data['status'] == "Token is invalid!"){
+            logout();
+            window.location.href='/'
         }
-        else
-            console.log("Wrong");
+        if (data['status'] == "Success"){
+            window.location.href = '/profile/' + data['username']
+        }
+        else{
+            window.location.href='/'
+        }
+    
 
 
         setSubmitting(false);
