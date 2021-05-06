@@ -90,6 +90,7 @@ export default function CreateGame(props: { history: string[]; }) {
                     }
                 })}
             />
+            {errors.description ? <div>{errors.description.message} </div> : null}
         </div>
         <div>
             <label htmlFor="looking_for">Looking for new players?</label>
@@ -108,9 +109,18 @@ export default function CreateGame(props: { history: string[]; }) {
                     required: {
                         value: true,
                         message: "Please enter your campaign access code"
-                    }
+                    },
+                    minLength: {
+                        value: 4,
+                        message: "Must be 4 characters long.",
+                    },  
+                    maxLength: {
+                        value: 12,
+                        message: "Must be 8 characters long.",
+                    },
                 })}
             />
+            {errors.password ? <div>{errors.password.message} </div> : null}
         </div>
         <div>
             <label htmlFor="capacity">How many players? (8 players max)</label>
@@ -122,10 +132,24 @@ export default function CreateGame(props: { history: string[]; }) {
                     required: {
                         value: true,
                         message: "Please enter your campaign capacity"
-                    }
+                    },minLength: {
+                        value: 1,
+                        message: "Must be 1 character long"
+                    },
+                    maxLength: {
+                        value: 1,
+                        message: "Must be 1 character long"
+                    },
+                      validate: (value) => {
+                        return [
+                            /[0-9]/
+                        ].every((pattern) => 
+                        pattern.test(value)) 
+                        || "Must contain only numbers";
+                    },
                 })}
             />
-            {errors.description ? <div>{errors.description.message} </div> : null}
+            {errors.capacity ? <div>{errors.capacity.message} </div> : null}
         </div>
         <div>
             <label htmlFor="date">Campaign start date</label>

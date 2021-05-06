@@ -87,7 +87,15 @@ export default function CreateAccount(props: { history: string[]; }) {
                                                 required: {
                                                     value: true,
                                                     message: "Type your first name."
-                                                }
+                                                },
+                                                validate: (value) => {
+                                                    return [
+                                                        /[a-z]/,
+                                                        /[A-Z]/,
+                                                    ].every((pattern) =>
+                                                        pattern.test(value))
+                                                        || "Must contain lower and upper character";
+                                                },
 
                                             })}
                                         />
@@ -103,7 +111,15 @@ export default function CreateAccount(props: { history: string[]; }) {
                                                 required: {
                                                     value: true,
                                                     message: "Type your last name."
-                                                }
+                                                },
+                                                validate: (value) => {
+                                                    return [
+                                                        /[a-z]/,
+                                                        /[A-Z]/,
+                                                    ].every((pattern) =>
+                                                        pattern.test(value))
+                                                        || "Must contain lower and upper character";
+                                                },
                                             })}
                                         />
                                         {errors.last_name ? <div>{errors.last_name.message} </div> : null}
@@ -118,7 +134,7 @@ export default function CreateAccount(props: { history: string[]; }) {
                                                 required: {
                                                     value: true,
                                                     message: "Please enter valid username."
-                                                }
+                                                },
                                             })}
                                         />
                                         {errors.username ? <div>{errors.username.message} </div> : null}
