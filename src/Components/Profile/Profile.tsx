@@ -1,6 +1,7 @@
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./Profile.css";
 import React, {useEffect} from 'react';
+import {Link, useParams} from "react-router-dom";
 import {isLogged,getPublicId,getToken, logout} from "../../Services/authentication";
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -22,6 +23,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import { Box } from "@material-ui/core";
+
+import GamePage from "../GamePage/GamePage"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,9 +79,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface ParamTypes {
+  username: string
+}
 
 
-export default function Profile(props: { history: string[]; }){
+
+export default function Profile(props: { history: any[]; }){
     const token = getToken();
     const classes = useStyles();
     const [expandedId, setExpandedId] = React.useState(-1);   
@@ -93,17 +100,18 @@ export default function Profile(props: { history: string[]; }){
       },
       rendered: false
     });
+    const [allGames, setAllGames] = React.useState([]);
+    let {username} = useParams<ParamTypes>();
+
 
     async function getUser() {
       const response = await fetch('/api/user', {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          publicId: getPublicId(),
-          token: getToken(),
-        })
+            "x-Access-Token" : `${token}`
+
+        }
       });
       const users = await response.json();
       console.log(users);
@@ -112,6 +120,9 @@ export default function Profile(props: { history: string[]; }){
         logout();
       }
       else{
+        if(users['username'] != username){
+          window.location.href="/profile/"+users['username']
+        }
         setUserProfile({
           data: {
             username: users['username'],
@@ -124,23 +135,90 @@ export default function Profile(props: { history: string[]; }){
         });
       }
 
+
+    }
+
+    async function getAllCampaigns() {
+      const response = await fetch('/api/getgames', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
+        },
+        // body: JSON.stringify({
+        //   publicId: getPublicId(),
+        // })
+      });
+      const data = await response.json();
+      console.log(data);
+
+      if(data['status'] == "Token is invalid!"){
+        logout();
+        window.location.href='/'
+
+      }
+      if(data['status'] == "Success"){
+          setAllGames(data['games']);
+      }
+
+
+    }
+
+    async function createRoom(id_: number, password_: string) {
+      const response = await fetch('/api/create-room', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
+        },
+        body: JSON.stringify({
+          rpassword: password_,
+          cmid: id_
+        })
+      });
+      const data = await response.json();
+
+      if(data['status'] == "Success"){
+        window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
+        // props.history.push({
+        //   pathname: "/gamepage/room="+data['room']+"&code="+data['password'],  
+        //   state: {
+        //     room:  data['room'],
+        //     password: data['password'],
+        //   }
+        // })
+      }else{
+        console.log("Not logged in", "room-create fail")
+      }
+
+      console.log(data, "room");
+
+      if(data['status'] == "Token is invalid!"){
+        logout();
+        window.location.href='/'
+      }
+
+
     }
 
 
-    const user = () => {
-      const users = getUser();
-      
-    }
 
     useEffect(() => {
       if(!userProfile.rendered){
         getUser();
       }
-    });
+    },[]);
+
+    useEffect(() => {
+      getAllCampaigns();
+      console.log(allGames)
+    },[]);
 
 
     const games = [{ _id: "1" }, { _id: "2" }, { _id: "3" }];
-    const friends = [{ _id: "1" }, { _id: "2" }, { _id: "3" }];
+    const friends = [{ _id: "1", name : "Carlos" }, { _id: "2", name : "Miguel" }, { _id: "3", name : "Amanda" }];
 
 
     const handleExpandClick = (i: number) => {
@@ -150,229 +228,190 @@ export default function Profile(props: { history: string[]; }){
       setExpandedFriendId(expandedFriendId === i ? -1 : i);
     };
 
-    return (
-      <div className={classes.root}>
-        <Typography variant="h4" gutterBottom>
-          {userProfile.data.fname}
-        </Typography>
-        <Grid container spacing={1} justify="center" alignItems='center'>
-          <Grid item xs={4}>
-            <Paper className={classes.paper}>
-            Games
-              <Grid container wrap="nowrap" spacing={2}>
-                <Grid item xs>
-                  <Typography>
 
-                  {games.map((game, i) => (
-                    <Card className={classes.cardroot} key={game._id}>
-                      Game
-                      <CardContent />
-                      <CardActions disableSpacing>
-                        {/* <IconButton aria-label="add to favorites">
-                          <FavoriteIcon />
-                        </IconButton>
-                        <IconButton aria-label="share">
-                          <ShareIcon />
-                        </IconButton> */}
-                        <IconButton
-                          className={clsx(classes.expand, {
-                            [classes.expandOpen]: expandedId,
-                          })}
-                          onClick={() => handleExpandClick(i)}
-                          aria-expanded={expandedId === i}
-                          aria-label="show more"
-                        >
-                          <ExpandMoreIcon />
-                        </IconButton>
-                      </CardActions>
-                      <Collapse in={expandedId === i} timeout="auto" unmountOnExit>
-                        <CardContent>
-                          <Typography paragraph>Description:</Typography>
-                          <Typography paragraph>
-                            This is the game description. If "Play" button is pressed the ongoing game will start.
-                          </Typography>
-                          <Box component="span" m={1} className={classes.box}>
-                            <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
-                              Play
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Collapse>
-                    </Card>
-                  ))}
-
-
-
-                    {/* <Card className={classes.cardroot}>
-                      <CardHeader
-                        // action={
-                        //   <IconButton aria-label="settings">
-                        //     <MoreVertIcon />
-                        //   </IconButton>
-                        // }
-                        title="DnD Game 1"
-                        subheader="September 14, 2016"
-                      />
-                      {/* <CardMedia
-                        className={classes.media}
-                        image="/Images/DnD4.jpg"
-                        title="Paella dish"
-                      /> */}
-                      {/* <CardContent>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          This impressive paella is a perfect party dish and a fun meal to cook together with your
-                          guests. Add 1 cup of frozen peas along with the mussels, if you like.
-                        </Typography>
-                      </CardContent> 
-                      <CardActions disableSpacing>
-                        <IconButton
-                          onClick={handleExpandClick(i)}
-                          aria-expanded={expandedId === i}
-                          aria-label="show more"
-                        >
-                          <ExpandMoreIcon />
-                        </IconButton>
-                      </CardActions>
-                      <Collapse in={expandedId === i} timeout="auto" unmountOnExit>
-                        <CardContent>
-                          <Typography paragraph>Description:</Typography>
-                          <Typography paragraph>
-                            This is the game description. If "Play" button is pressed the ongoing game will start.
-                          </Typography>
-                          <Box component="span" m={1} className={classes.box}>
-                            <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
-                              Play
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Collapse>
-                    </Card> */}
+    if(allGames.length == 0){
+      return (
+        <div className={classes.root}>
+          <Typography variant="h4" gutterBottom>
+            {userProfile.data.fname}
+          </Typography>
+          <Grid container spacing={1} justify="center" alignItems='center'>
+            <Grid item xs={4}>
+              <Paper className={classes.paper}>
+              Games
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item xs>
+                    <Typography component={'span'}>
+                      No Games     
+                    </Typography>
                     <Box component="span" m={1} className={classes.box}>
-                      <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
-                        Add
-                      </Button>
+                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
+                          Add
+                        </Button>
                     </Box>
-                    
-                    
-                  </Typography>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Paper className={classes.paper}>
+                Friends
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item xs>
+                    <Typography component={'span'}>
+                      No Friends     
+                    </Typography>
+                    <Box component="span" m={1} className={classes.box}>
+                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} >
+                          Add
+                        </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          
+              <Grid item xs={4}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                    User Description
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                      Character List
+                    </Paper>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Paper>
+            
+          
           </Grid>
-          <Grid item xs={4}>
-            <Paper className={classes.paper}>
-              Friends
+          <Divider className={classes.divider} />
+          
+        </div>
+        
+      )
 
-                {friends.map((friend, i) => (
-                      <Card className={classes.cardroot} key={friend._id}>
-                        Friend
+    }
+    else{
+      return (
+        <div className={classes.root}>
+          <Typography variant="h4" gutterBottom>
+            {userProfile.data.fname}
+          </Typography>
+          <Grid container spacing={1} justify="center" alignItems='center'>
+            <Grid item xs={4}>
+              <Paper className={classes.paper}>
+              Games
+                <Grid container wrap="nowrap" spacing={2}>
+                  <Grid item xs>
+                    <Typography component={'span'}>
+  
+                    {allGames.map((game, i) => (
+                      <Card className={classes.cardroot} key={game['cmid']}>
+                        {game['cname']}
                         <CardContent />
                         <CardActions disableSpacing>
-                          {/* <IconButton aria-label="add to favorites">
-                            <FavoriteIcon />
-                          </IconButton>
-                          <IconButton aria-label="share">
-                            <ShareIcon />
-                          </IconButton> */}
                           <IconButton
                             className={clsx(classes.expand, {
-                              [classes.expandOpen]: expandedFriendId,
+                              [classes.expandOpen]: expandedId,
                             })}
-                            onClick={() => handleExpandClickFriend(i)}
-                            aria-expanded={expandedFriendId === i}
+                            onClick={() => handleExpandClick(i)}
+                            aria-expanded={expandedId === i}
                             aria-label="show more"
                           >
                             <ExpandMoreIcon />
                           </IconButton>
                         </CardActions>
-                        <Collapse in={expandedFriendId === i} timeout="auto" unmountOnExit>
+                        <Collapse in={expandedId === i} timeout="auto" unmountOnExit>
                           <CardContent>
-                            <div>ActivitiesList</div>
+                            <Typography paragraph>Description:</Typography>
+                            <Typography paragraph>
+                              {game['cdescription']}
+                            </Typography>
+                            <Typography>Entry Code</Typography> 
+                            <Typography>{game['password']}</Typography>
+                            <Box component="span" m={1} className={classes.box}>
+              
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
+                                Play
+                              </Button>
+                            </Box>
                           </CardContent>
                         </Collapse>
                       </Card>
                     ))}
-                  {/* <Card className={classes.cardroot}>
-                    <CardHeader
-                      // avatar={
-                      //   <Avatar aria-label="recipe" className={classes.avatar}>
-                      //     R
-                      //   </Avatar>
-                      // }
-                      action={
-                        <IconButton aria-label="settings">
-                          <MoreVertIcon />
-                        </IconButton>
-                      }
-                      title="Bob Bobson"
-                      subheader="September 14, 2016"
-                    />
-                    {/* <CardMedia
-                      className={classes.media}
-                      image="/Images/DnD4.jpg"
-                      title="Paella dish"
-                    /> */}
-                    {/* <CardContent>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        This impressive paella is a perfect party dish and a fun meal to cook together with your
-                        guests. Add 1 cup of frozen peas along with the mussels, if you like.
-                      </Typography>
-                    </CardContent> */}
-                    {/* <CardActions disableSpacing> */}
-                      {/* <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
-                      </IconButton>
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
-                      <IconButton
-                        className={clsx(classes.expand, {
-                          [classes.expandOpen]: expanded,
-                        })}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </CardActions>
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
-                      <CardContent>
-                        <Typography paragraph>Description:</Typography>
-                        <Typography paragraph>
-                          Loves hotdogs!
-                        </Typography>   
-                      </CardContent>
-                    </Collapse>
-                  </Card> */}
-                  <Box component="span" m={1} className={classes.box}>
-                    <Button variant="contained" color="secondary" style={{ borderRadius: 20 }}>
-                      Add
-                    </Button>
-                  </Box>
-            </Paper>
-          </Grid>
-        
+                      <Box component="span" m={1} className={classes.box}>
+                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
+                          Add
+                        </Button>
+                      </Box>
+                      
+                      
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
             <Grid item xs={4}>
-              <Grid container>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                  User Description
-                  </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    Character List
-                  </Paper>
-                </Grid>
-              </Grid>
+              <Paper className={classes.paper}>
+                Friends
+  
+                  {friends.map((friend, i) => (
+                        <Card className={classes.cardroot} key={friend._id}>
+                          {friend.name}
+                          <CardContent />
+                          <CardActions disableSpacing>
+                            <IconButton
+                              className={clsx(classes.expand, {
+                                [classes.expandOpen]: expandedFriendId,
+                              })}
+                              onClick={() => handleExpandClickFriend(i)}
+                              aria-expanded={expandedFriendId === i}
+                              aria-label="show more"
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          </CardActions>
+                          <Collapse in={expandedFriendId === i} timeout="auto" unmountOnExit>
+                            <CardContent>
+                              <div>Description:</div>
+                            </CardContent>
+                          </Collapse>
+                        </Card>
+                      ))}
+                    <Box component="span" m={1} className={classes.box}>
+                      <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { alert('clicked') }}>
+                        Add
+                      </Button>
+                    </Box>
+              </Paper>
             </Grid>
           
+              <Grid item xs={4}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                    User Description
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                      Character List
+                    </Paper>
+                  </Grid>
+                </Grid>
+              </Grid>
+            
+          
+          </Grid>
+          <Divider className={classes.divider} />
+          
+        </div>
         
-        </Grid>
-        <Divider className={classes.divider} />
-        
-      </div>
-      
-    )
-}
+      )
+    }
+  }
+   

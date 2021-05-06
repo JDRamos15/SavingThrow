@@ -1,0 +1,28 @@
+.btn_1{
+    align-items: auto;
+    margin-left:10px;
+    padding-right: 5px;
+}
+
+.btn_2{
+    align-items: auto;
+    margin-right:10px;
+}
+
+Button{
+  align-items: auto;
+  margin-right:10px;
+}
+
+.chat-form {
+    width: 22vw;
+    /* margin: 0 auto; */
+    margin-right: 0;
+    padding-right: 1%;
+  }
+
+
+input {
+    width: 100%;
+    padding: 0.25rem;
+  }

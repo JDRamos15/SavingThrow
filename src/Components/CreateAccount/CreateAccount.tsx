@@ -17,8 +17,7 @@ interface FormData {
 
 }
 export default function CreateAccount(props: { history: string[]; }){
-    const {register, handleSubmit, errors,} = useForm<FormData>({
-    });
+    const {register, handleSubmit, errors,} = useForm<FormData>({});
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return <form onSubmit={handleSubmit(async(formData)=>{
@@ -55,7 +54,7 @@ export default function CreateAccount(props: { history: string[]; }){
                 if (logIndata['status'] == "Success"){
                     console.log(logIndata)
                     login(logIndata['loggedIn'], logIndata['token'], logIndata['username'], logIndata['public_id'], logIndata['fname'])
-                    props.history.push('/profile/'+logIndata['username']);
+                    window.location.href='/profile/'+logIndata['username']
                 }
             }
             else

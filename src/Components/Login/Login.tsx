@@ -13,9 +13,7 @@ interface FormData {
 
 }
 export default function Login(props: { history: string[]; }){
-    const {register, handleSubmit, errors,} = useForm<FormData>({
-
-    });
+    const {register, handleSubmit, errors,} = useForm<FormData>({});
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [serverErrors, setServerErrors] = useState<Array<string>>([]);
     return <form onSubmit={handleSubmit(async(formData)=>{
@@ -36,7 +34,7 @@ export default function Login(props: { history: string[]; }){
             const data = await response.json();
             if (data['status'] == "Success"){
                 console.log(data)
-                console.log(data['username'])
+                console.log(data['token'])
                 login(data['loggedIn'], data['token'], data['username'], data['public_id'], data['fname'])
                 // props.history.push('/profile/'+data['username']);
                 window.location.href='/profile/'+data['username']

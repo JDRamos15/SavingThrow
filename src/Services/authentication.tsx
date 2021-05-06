@@ -11,10 +11,12 @@ export const isLogged = () => {
 }
 
 export const login = (logged: boolean, token :string, username: string, public_id: string, fname: string) => {
-    localStorage.setItem('token', token);
+    const new_token = token.replace('"', '')
+    const new_publicId = public_id.replace('"', "")
+    localStorage.setItem('token', new_token);
     localStorage.setItem('username', JSON.stringify(username));
     localStorage.setItem('isLogged', JSON.stringify(logged));
-    localStorage.setItem('public_id', JSON.stringify(public_id));
+    localStorage.setItem('public_id', new_publicId);
     localStorage.setItem('fname', JSON.stringify(fname));
 
 }

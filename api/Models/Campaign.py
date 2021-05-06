@@ -1,24 +1,38 @@
 # Accept current change
-# from api.extension import db
-from extension import db
-
+from api.extension import db
+# from extension import db
  
 class campaignModel(db.Model):
     __tablename__ = 'campaign'
  
     cmid = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String())
+    cname = db.Column(db.String())
     dm_uid = db.Column(db.Integer())
-    description = db.Column(db.String())
+    cdescription = db.Column(db.String())
     start_date = db.Column(db.String())
-    date_created = db.Column(db.String())
+    looking_for = db.Column(db.Boolean())
+    date_updated = db.Column(db.Date())
+    password = db.Column(db.String())
+    ccapacity = db.Column(db.Integer())
 
  
-    def __init__(self, ufirst_name, ulast_name, uemail, upassword):
-        self.ufirst_name = ufirst_name
-        self.ulast_name = ulast_name
-        self.uemail = uemail
-        self.upassword = upassword
- 
+    def __init__(self, cname, dm_uid, cdescription, start_date, looking_for, date_updated, password, ccapacity):
+        self.cname = cname
+        self.dm_uid = dm_uid
+        self.cdescription = cdescription
+        self.start_date = start_date
+        self.looking_for = looking_for
+        self.date_updated = date_updated
+        self.password = password
+        self.ccapacity = ccapacity
+
+
     def __repr__(self):
-        return f'User("{self.ufirst_name}","{self.last_name}", "{self.uemail}")'
+        return f'Campaign("{self.cname}","{self.dm_uid}","{self.cdescription}","{self.looking_for}","{self.start_date}","{self.date_updated}", "{self.password}", "{self.ccapacity}")'
+    
+    def serialize(self):
+        return {
+            'name': self.cname,
+            'author': self.author,
+            'published':self.published
+        }

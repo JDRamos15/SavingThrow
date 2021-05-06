@@ -28,6 +28,7 @@ export default function NavBar() {
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="ml-auto">
                     <Nav.Link href={"/profile/"+getUsername()}>Profile</Nav.Link>
+                    <Nav.Link href={"/joinGame"}>Join Game</Nav.Link>
                     <Nav.Link href="/" onClick = {(logout)}>Logout</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
