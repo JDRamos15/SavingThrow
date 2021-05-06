@@ -53,7 +53,7 @@ export default function JoinGame(props: { history: string[]; }){
                 });
                 const room_data = await join_response.json();
                 if (room_data['status'] == "Success"){
-                    window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
+                    window.location.href="/gamePage/room="+room_data['room']+"&code="+room_data['password']
                 }
                 else
                     setServerErrors([data['error']]);
