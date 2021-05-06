@@ -171,7 +171,7 @@ export default function GamePage(props: { history: string[];}){
     return (
         <div>
             <h1 className="title">Campaign</h1>
-            <h3 className="room">Room: {room}</h3>
+            <h3 className="room">Room: {room} Code: {code}</h3>
 
         <div className="container"> 
                 <div className="box"> 
