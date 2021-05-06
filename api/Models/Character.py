@@ -1,4 +1,4 @@
-from .extension import db
+from api.extension import db
  
 class characterModel(db.Model):
     __tablename__ = 'character'
