@@ -89,9 +89,9 @@ def index():
     return app.send_static_file('index.html')
 
 
-@app.route("/api/login", methods=['GET'])
+@app.route("/api/login", methods=['POST'])
 def login():
-    if request.method == 'GET':
+    if request.method == 'POST':
         body = request.get_json()     
         uusername = body['username']
         upassword = body['password']
@@ -117,8 +117,6 @@ def login():
                 return jsonify({'error' : "Incorrect email or password"}), 404
         else:
             return jsonify({'error' : "Incorrect email or password"}), 404
-
-    
     return jsonify({'error' : "Method is not GET"}), 404
 
 
@@ -155,8 +153,7 @@ def createUser():
 @token_required
 def getUser(current_user):
     if request.method == 'GET':
-        body = request.get_json()
-        publicid = body['publicId'].replace('"', '')
+        publicid = current_user.publicId
         checkPublicId = userModel.query.filter_by(publicId=publicid).first()
         if checkPublicId is None:
             return jsonify({'status' : "User does not exist"})
@@ -169,7 +166,7 @@ def getUser(current_user):
                     'fname': checkPublicId.ufirst_name,
                     'lname': checkPublicId.ulast_name
                     }), 200
-    return jsonify({'error' : "Method is not GET"}), 404
+    return jsonify({'error' : "Method is not POST"}), 404
 
 
 @app.route("/api/create-game", methods=['POST'])

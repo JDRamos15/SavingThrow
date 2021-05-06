@@ -44,7 +44,7 @@ export default function CreateAccount(props: { history: string[]; }){
             const data = await response.json();
             if (data == "Success"){
                 const logInresponse = await fetch("api/login", {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },

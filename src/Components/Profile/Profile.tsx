@@ -111,10 +111,7 @@ export default function Profile(props: { history: any[]; }){
             "Content-Type": "application/json",
             "x-Access-Token" : `${token}`
 
-        },
-        body: JSON.stringify({
-          publicId: getPublicId(),
-        })
+        }
       });
       const users = await response.json();
       console.log(users);
