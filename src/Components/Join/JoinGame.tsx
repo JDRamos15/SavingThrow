@@ -35,6 +35,9 @@ export default function JoinGame(props: { history: string[]; }){
                 })
             });
             const data = await response.json();
+            if(data['status'] == "Token is invalid!"){
+                window.location.href='/'
+            }
             if(data['status'] == 'Does not exist'){
                 window.location.href="/charactersheet/"+data['cmid']
             }

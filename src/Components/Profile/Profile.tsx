@@ -114,6 +114,7 @@ export default function Profile(props: { history: any[]; }){
 
       if(users['status'] == "Token is invalid!"){
         logout();
+        window.location.href='/'
       }
       else{
         if(users['username'] != username){

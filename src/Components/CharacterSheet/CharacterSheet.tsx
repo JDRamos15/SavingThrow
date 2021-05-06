@@ -29,6 +29,9 @@ export default function CharacterSheet(props: { history: string[]; }) {
             
         });
         const res = await response.json();
+        if(res['status'] == "Token is invalid!"){
+            window.location.href='/'
+        }
         if (res['status'] == "Success") {
             console.log("Success!")
             // let body = {
