@@ -2,7 +2,7 @@
 import "./Profile.css";
 import React, {useEffect} from 'react';
 import {Link, useParams} from "react-router-dom";
-import {isLogged,getPublicId,getToken, logout} from "../../Services/authentication";
+import {isLogged,getUsername,getToken, logout} from "../../Services/authentication";
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -110,9 +110,9 @@ export default function Profile(props: { history: any[]; }){
         }
       });
       const users = await response.json();
-
       if(users['status'] == "Token is invalid!"){
         logout();
+        window.location.href='/'
       }
       else{
         if(users['username'] != username){
@@ -173,14 +173,38 @@ export default function Profile(props: { history: any[]; }){
 
       if(data['status'] == "Success"){
         window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
-      }else{
-        console.log("Not logged in", "room-create fail")
       }
-
-
+      
       if(data['status'] == "Token is invalid!"){
         logout();
         window.location.href='/'
+      }
+
+
+    }
+
+
+    async function deleteCampaign(id_: number, password_: string) {
+      const response = await fetch('/api/delete-game', {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "x-Access-Token" : `${token}`
+
+        },
+        body: JSON.stringify({
+          rpassword: password_,
+          cmid: id_
+        })
+      });
+      const data = await response.json();
+      console.log(data);
+
+      if(data['status'] == "Token is invalid!"){
+        logout();
+      }
+      if(data['status'] == "Success"){
+        window.location.href="/profile/"+getUsername()
       }
 
 
@@ -319,6 +343,9 @@ export default function Profile(props: { history: any[]; }){
               
                               <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
                                 Play
+                              </Button>
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteCampaign(game['cmid'], game['password'])}}>                      
+                                Delete
                               </Button>
                             </Box>
                           </CardContent>

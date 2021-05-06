@@ -2,7 +2,7 @@
 import { Switch } from "@material-ui/core";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { getPublicId, getToken, getUsername } from "../../../Services/authentication";
+import { getPublicId, getToken, getUsername, logout } from "../../../Services/authentication";
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./CreateGame.css";
 
@@ -49,8 +49,13 @@ export default function CreateGame(props: { history: string[]; }) {
         if (data['status'] == "Success"){
             props.history.push('/charactersheet/'+data['cmid']);
         }
-        else
-            console.log("Wrong");
+        if (data['status'] == "Success"){
+            window.location.href = '/profile/' + data['username']
+        }
+        else{
+            window.location.href='/'
+        }
+    
 
 
         setSubmitting(false);
@@ -84,6 +89,7 @@ export default function CreateGame(props: { history: string[]; }) {
                     }
                 })}
             />
+            {errors.description ? <div>{errors.description.message} </div> : null}
         </div>
         <div>
             <label htmlFor="looking_for">Looking for new players?</label>
@@ -102,9 +108,18 @@ export default function CreateGame(props: { history: string[]; }) {
                     required: {
                         value: true,
                         message: "Please enter your campaign access code"
-                    }
+                    },
+                    minLength: {
+                        value: 4,
+                        message: "Must be 4 characters long.",
+                    },  
+                    maxLength: {
+                        value: 12,
+                        message: "Must be 8 characters long.",
+                    },
                 })}
             />
+            {errors.password ? <div>{errors.password.message} </div> : null}
         </div>
         <div>
             <label htmlFor="capacity">How many players? (8 players max)</label>
@@ -112,14 +127,23 @@ export default function CreateGame(props: { history: string[]; }) {
                 type="number"
                 name="capacity"
                 id="capacity"
+                min = "3"
+                max = "8"
                 ref={register({
                     required: {
                         value: true,
                         message: "Please enter your campaign capacity"
-                    }
+                    },
+                    validate: (value) => {
+                        return [
+                            /[0-9]/
+                        ].every((pattern) => 
+                        pattern.test(value)) 
+                        || "Must contain only numbers";
+                    },
                 })}
             />
-            {errors.description ? <div>{errors.description.message} </div> : null}
+            {errors.capacity ? <div>{errors.capacity.message} </div> : null}
         </div>
         <div>
             <label htmlFor="date">Campaign start date</label>

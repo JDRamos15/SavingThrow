@@ -35,10 +35,13 @@ export default function GamePage(props: { history: string[];}){
     useEffect(() => {
         verifyRoom = false;
         checkRoom();
+<<<<<<< HEAD
   
 
         return () => {
         };
+=======
+>>>>>>> 0ba4bf422bfb94a9baa5e0ed3940120b20373c9d
 
     }, [ENDPOINT]);
 
@@ -130,6 +133,13 @@ export default function GamePage(props: { history: string[];}){
             })
           });
         const data = await response.json();
+<<<<<<< HEAD
+=======
+        if(data['status'] == "Token is invalid!"){
+            logout();
+            window.location.href='/'
+        }
+>>>>>>> 0ba4bf422bfb94a9baa5e0ed3940120b20373c9d
         if(data['error']){
             socket.emit('close', {name: userName, room: data.room})
             window.location.href='/profile/'+userName
@@ -151,10 +161,7 @@ export default function GamePage(props: { history: string[];}){
                 const deleteData = await deleteResponse.json();
             }
         }
-        if(data['status'] == "Token is invalid!"){
-            logout();
-            window.location.href='/'
-        }
+  
         window.location.href='/profile/'+userName
 
         //     socket.emit('leave', { name: data.name, room: data.room  });

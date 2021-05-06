@@ -19,6 +19,7 @@ gevent-websocket = "*"
 flask-cors = "*"
 flask = "*"
 jwt = "*"
+boto3 = "*"
 
 [dev-packages]
 

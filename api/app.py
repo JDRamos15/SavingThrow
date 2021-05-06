@@ -40,7 +40,7 @@ from flask_socketio import SocketIO, join_room, leave_room, send, close_room
 import random
 
 UPLOAD_FOLDER = './media'
-ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
+ALLOWED_EXTENSIONS = set({'pdf'})
 S3_BUCKET = os.environ.get('S3_BUCKET')
 
 
@@ -206,7 +206,6 @@ def createGame(current_user):
                     'cmid' : new_campaign.cmid
                     }
         return jsonify(response), 201
-
     return jsonify({'error' : "Method is not POST"}), 404
 
 
@@ -241,11 +240,11 @@ def getGames(current_user):
 def deleteGame(current_user):
     if request.method == 'DELETE':        
         body = request.get_json()
-        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
+        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid'], password=body['rpassword']).first()
         db.session.delete(campaignToDelete)
         db.session.commit()
 
-        return make_response(jsonify("Success", 201))
+        return jsonify({'status' : "Success"}), 200
     return jsonify({'error' : "Method is not DELETE"}), 404
 
 
@@ -314,8 +313,10 @@ def createCharacterSheet(current_user):
             filename = file.filename
             date_created = datetime.datetime.now().replace(microsecond=0)
             date_updated = datetime.datetime.now().replace(microsecond=0)
+            key = cs_path+".pdf"
             s3_client = boto3.client('s3')
-            upload_aws = s3_client.generate_presigned_post(S3_BUCKET, cs_path,    Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
+            upload_aws = s3_client.upload_fileobj(file, S3_BUCKET, key)
+            # upload_aws = s3_client.generate_presigned_post(Bucket=S3_BUCKET, Key=cs_path, Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
             new_characterSheet = characterSheetModel(user_id=user_uid, cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
             db.session.add(new_characterSheet)
             db.session.commit()
@@ -369,7 +370,7 @@ def deleteRoom(current_user):
             for row in deleteRoom:
                 db.session.delete(row)
                 db.session.commit()
-            return jsonify("Success"), 201
+            return jsonify({'status' :"Success"}), 201
 
         else:
             return jsonify({'error' : "Room does not exist"}), 404
