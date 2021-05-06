@@ -17,7 +17,6 @@ export default function CharacterSheet(props: { history: string[]; }) {
     let inventoryList: any = [];
     const formData = new FormData();
     const token = getToken();
-    const userName = getUsername();
 
     const addInventoryList = (item: any) => {
         inventoryList.push(item)
@@ -55,7 +54,7 @@ export default function CharacterSheet(props: { history: string[]; }) {
                 const character_response = await fetch("/api/create-character", req);
                 const character_res = await character_response.json();
                 if(character_res['status'] == 'Success'){
-                    window.location.href='/profile/'+ userName;
+                    window.location.href='/joinGame';
                 }
             }
             else {
