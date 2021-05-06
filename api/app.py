@@ -40,7 +40,7 @@ from flask_socketio import SocketIO, join_room, leave_room, send, close_room
 import random
 
 UPLOAD_FOLDER = './media'
-ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
+ALLOWED_EXTENSIONS = set({'pdf'})
 S3_BUCKET = os.environ.get('S3_BUCKET')
 
 
@@ -307,8 +307,9 @@ def createCharacterSheet(current_user):
             filename = file.filename
             date_created = datetime.datetime.now().replace(microsecond=0)
             date_updated = datetime.datetime.now().replace(microsecond=0)
+            key = cs_path+".pdf"
             s3_client = boto3.client('s3')
-            upload_aws = s3_client.upload_fileobj(file, S3_BUCKET, cs_path)
+            upload_aws = s3_client.upload_fileobj(file, S3_BUCKET, key)
             # upload_aws = s3_client.generate_presigned_post(Bucket=S3_BUCKET, Key=cs_path, Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
             new_characterSheet = characterSheetModel(user_id=user_uid, cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
             db.session.add(new_characterSheet)
