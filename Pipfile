@@ -17,6 +17,8 @@ PyJWT = "*"
 pyjwt = "*"
 gevent-websocket = "*"
 flask-cors = "*"
+flask = "*"
+jwt = "*"
 
 [dev-packages]
 

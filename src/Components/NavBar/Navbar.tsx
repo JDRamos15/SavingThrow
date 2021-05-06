@@ -1,6 +1,7 @@
 import { Navbar, Nav } from "react-bootstrap";
 import {isLogged,getPublicId, getUsername, logout} from "../../Services/authentication";
 import React, {useEffect} from 'react';
+import savingThrowLogo from '../../Images/SavingThrowLogo.png';
 import "./Navbar.css";
 
 export default function NavBar() {
@@ -23,7 +24,16 @@ export default function NavBar() {
     if(logged){
         return(
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Navbar.Brand href="/"><h1>Saving Throw</h1></Navbar.Brand>
+            <Navbar.Brand href="/" className="navbar">
+                <img
+                    alt=""
+                    src={savingThrowLogo}
+                    width="30"
+                    height="30"
+                    className="d-inline-block align-top"
+                />{' '}
+                Saving Throw
+                </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="ml-auto">
@@ -37,8 +47,16 @@ export default function NavBar() {
     }
     else{
         return (
-            <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                <Navbar.Brand href="/"><h1>Saving Throw</h1></Navbar.Brand>
+            <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
+                <Navbar.Brand href="/" className="d-flex align-content-left">
+                <img
+                    alt=""
+                    src={savingThrowLogo}
+                    width="100"
+                    height="50"
+                    className="d-inline-block align-top"
+                />
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="ml-auto">
