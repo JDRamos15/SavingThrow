@@ -449,7 +449,7 @@ def checkRoom(current_user):
                         }), 200
         else:
             return jsonify({
-                'error': "Room does not exist"
+                'error': "Incorrect room or password"
             }), 400
     return jsonify({'error' : "Method is not GET"}), 404
 
