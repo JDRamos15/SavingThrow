@@ -78,7 +78,7 @@ export default function Login(props: { history: string[]; }) {
                                     <div>
                                         <label htmlFor="password"> Password</label>
                                         <input
-                                            type="text"
+                                            type="password"
                                             name="password"
                                             id="password"
                                             ref={register({ required: "required" })}
