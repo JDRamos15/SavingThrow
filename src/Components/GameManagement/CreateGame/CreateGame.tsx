@@ -47,10 +47,7 @@ export default function CreateGame(props: { history: string[]; }) {
         });
         const data = await response.json();
         if (data['status'] == "Success"){
-            props.history.push('/charactersheet/'+data['cmid']);
-        }
-        if (data['status'] == "Success"){
-            window.location.href = '/profile/' + data['username']
+            window.location.href = '/charactersheet/'+data['cmid']
         }
         else{
             window.location.href='/'
