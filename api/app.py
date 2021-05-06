@@ -119,7 +119,7 @@ def login():
             return jsonify({'error' : "Incorrect email or password"}), 404
 
     
-    return jsonify('error' : "Method is not GET"), 404
+    return jsonify({'error' : "Method is not GET"}), 404
 
 
 @app.route("/api/create", methods=['GET','POST'])
@@ -147,7 +147,7 @@ def createUser():
             'error' : "Email or Username already in use."
         }), 401
         # jsonify("Email or Username already is use"), 400
-    return jsonify('error' : "Method is not GET or POST"), 404
+    return jsonify({'error' : "Method is not GET or POST"}), 404
 
 
 
@@ -169,7 +169,7 @@ def getUser(current_user):
                     'fname': checkPublicId.ufirst_name,
                     'lname': checkPublicId.ulast_name
                     }), 200
-    return jsonify('error' : "Method is not GET"), 404
+    return jsonify({'error' : "Method is not GET"}), 404
 
 
 @app.route("/api/create-game", methods=['POST'])
@@ -195,7 +195,7 @@ def createGame(current_user):
         db.session.commit()
 
         return jsonify("Success"), 201
-    return jsonify('error' : "Method is not POST"), 404
+    return jsonify({'error' : "Method is not POST"}), 404
 
 
 @app.route("/api/getgames", methods=['GET'])
@@ -222,7 +222,7 @@ def getGames(current_user):
         return jsonify({'status': "Success",
                         'games' : result}), 201
 
-    return jsonify('error' : "Method is not GET"), 404
+    return jsonify({'error' : "Method is not GET"}), 404
 
     
 @app.route("/api/delete-game", methods=['DELETE'])
@@ -235,7 +235,7 @@ def deleteGame(current_user):
         db.session.commit()
 
         return make_response(jsonify("Success", 201))
-    return jsonify('error' : "Method is not DELETE"), 404
+    return jsonify({'error' : "Method is not DELETE"}), 404
 
 
 def allowed_file(filename):
@@ -257,7 +257,7 @@ def createCharacterSheet():
             db.session.add(new_characterSheet)
             db.session.commit()
             return make_response(jsonify("Success", 201))
-    return jsonify('error' : "Method is not POST"), 404
+    return jsonify({'error' : "Method is not POST"}), 404
 
 
 @app.route("/api/create-room", methods=['POST'])
@@ -282,7 +282,7 @@ def createRoom(current_user):
                 'room' : gen_room,
                 'password' : body['rpassword']
                 }), 201 
-    return jsonify('error' : "Method is not POST"), 404
+    return jsonify({'error' : "Method is not POST"}), 404
 
 
        
@@ -303,7 +303,7 @@ def deleteRoom(current_user):
         else:
             return jsonify({'error' : "Room does not exist"}), 404
 
-    return jsonify('error' : "Method is not DELETE"), 404
+    return jsonify({'error' : "Method is not DELETE"}), 404
 
 
 
@@ -328,7 +328,7 @@ def joinRoom(current_user):
         else:
             return jsonify({'error':"Room does not exist"}), 404
 
-    return jsonify('error' : "Method is not PUT"), 404
+    return jsonify({'error' : "Method is not PUT"}), 404
 
 
 @app.route("/api/leave-room", methods=['PUT'])
@@ -370,7 +370,7 @@ def leaveRoom(current_user):
 
         else:
             return jsonify({'error':"Room does not exist"}), 400
-    return jsonify('error' : "Method is not PUT"), 404
+    return jsonify({'error' : "Method is not PUT"}), 404
 
 
 
@@ -391,7 +391,7 @@ def checkRoom(current_user):
             return jsonify({
                 'error': "Room does not exist"
             }), 400
-    return jsonify('error' : "Method is not GET"), 404
+    return jsonify({'error' : "Method is not GET"}), 404
 
 
 
