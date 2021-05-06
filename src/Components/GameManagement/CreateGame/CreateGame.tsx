@@ -27,7 +27,6 @@ export default function CreateGame(props: { history: string[]; }) {
         setSubmitting(true);
         setServerErrors([]);
 
-        console.log(getPublicId())
         const response = await fetch("/api/create-game", {
             method: "POST",
             headers: {

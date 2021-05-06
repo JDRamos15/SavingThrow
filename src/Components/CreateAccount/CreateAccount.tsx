@@ -29,7 +29,6 @@ export default function CreateAccount(props: { history: string[]; }) {
                         <Card>
                             <Card.Body>
                                 <form onSubmit={handleSubmit(async (formData) => {
-                                    console.log(formData, "formData");
 
                                     const response = await fetch("api/create", {
                                         method: "POST",

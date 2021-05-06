@@ -237,11 +237,11 @@ def getGames(current_user):
 def deleteGame(current_user):
     if request.method == 'DELETE':        
         body = request.get_json()
-        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid']).first()
+        campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid'], password=['rpassword']).first()
         db.session.delete(campaignToDelete)
         db.session.commit()
 
-        return make_response(jsonify("Success", 201))
+        return jsonify('status' : "Success"), 200
     return jsonify({'error' : "Method is not DELETE"}), 404
 
 
@@ -358,7 +358,7 @@ def deleteRoom(current_user):
             for row in deleteRoom:
                 db.session.delete(row)
                 db.session.commit()
-            return jsonify("Success"), 201
+            return jsonify({'status' :"Success"}), 201
 
         else:
             return jsonify({'error' : "Room does not exist"}), 404

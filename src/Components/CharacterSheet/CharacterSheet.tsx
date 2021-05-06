@@ -19,7 +19,6 @@ export default function CharacterSheet(props: { history: string[]; }) {
         const formData = new FormData();
         const token = getToken();
         formData.append("characterSheet", data.file[0])
-        console.log(formData)
         const response = await fetch("/api/create-charactersheet", {
             method: "POST",
             headers: {
@@ -33,7 +32,6 @@ export default function CharacterSheet(props: { history: string[]; }) {
             window.location.href='/'
         }
         if (res['status'] == "Success") {
-            console.log("Success!")
             // let body = {
             //     csid: res['csid'],
             //     inventoryList: inventoryList
@@ -43,7 +41,6 @@ export default function CharacterSheet(props: { history: string[]; }) {
             //     headers: {'Content-Type':'application/json'},
             //     body: JSON.stringify(body)
             // }
-            // console.log(req)
             // const response = await fetch("/api/create-character", req);
         }
         else {

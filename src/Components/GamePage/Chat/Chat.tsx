@@ -12,7 +12,6 @@ interface ParamTypes {
 
 export default function Chat({ setMessage, sendMessage, message, leaveRoom  }: { setMessage: any, sendMessage: any, message: any, leaveRoom: any  }){     
     let {room, code} = useParams<ParamTypes>();
-    console.log("Room: " + room)
     return (
         <div>
             <form className="chat-form">
