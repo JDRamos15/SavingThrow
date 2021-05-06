@@ -371,10 +371,10 @@ def leaveRoom(current_user):
 
 
 
-@app.route("/api/check-room", methods=['GET'])
+@app.route("/api/check-room", methods=['PUT'])
 @token_required
 def checkRoom(current_user):
-    if request.method == 'GET':        
+    if request.method == 'PUT':        
         body = request.get_json()
         getRoom = roomModel.query.filter_by(room= body['room']).first()
         if getRoom:

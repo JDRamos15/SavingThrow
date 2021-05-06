@@ -91,7 +91,7 @@ export default function GamePage(props: { history: string[];}){
 
     async function checkRoom(){
         const response = await fetch('/api/check-room', {
-            method: "GET",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "x-Access-Token" : `${token}`,
