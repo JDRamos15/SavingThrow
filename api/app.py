@@ -308,7 +308,7 @@ def createCharacterSheet(current_user):
             date_created = datetime.datetime.now().replace(microsecond=0)
             date_updated = datetime.datetime.now().replace(microsecond=0)
             s3_client = boto3.client('s3')
-            upload_aws = s3_client.generate_presigned_post(app.config['S3_BUCKET'], cs_path,    Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
+            upload_aws = s3_client.generate_presigned_post(S3_BUCKET, cs_path,    Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
             new_characterSheet = characterSheetModel(user_id=user_uid, cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
             db.session.add(new_characterSheet)
             db.session.commit()
