@@ -23,7 +23,7 @@ function App() {
           <Route exact path="/create-game" component={CreateGame} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/profile/:username" component={Profile} />
-          <Route exact path="/charactersheet" component={CharacterSheet} />
+          <Route exact path="/charactersheet/:cmid" component={CharacterSheet} />
           <Route exact path="/gamePage/room=:room&code=:code" component={GamePage} />
           <Route exact path="/joinGame" component={JoinGame} />
           <Redirect to="/" />

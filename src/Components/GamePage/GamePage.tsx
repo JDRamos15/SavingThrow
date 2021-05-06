@@ -17,36 +17,27 @@ let verifyRoom: boolean;
 
 interface ParamTypes {
     room: string,
-    code: string,
-    // cname: string
+    code: string
   }
 
 export default function GamePage(props: { history: string[];}){
     let history = useHistory();
     let {room, code} = useParams<ParamTypes>();
-    // let location = useLocation();
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<string[]>([]);
     const [join, setJoin] = useState<boolean>(false);
-    // const [location, setLocation] = useState(window.location);
     const userName = getUsername();
     const fieldRef = React.useRef<HTMLInputElement>(null);
     let msgRef = messages;
     const token = getToken();
-    // const state: any = history.location.state
 
     useEffect(() => {
-        console.log(code)
         verifyRoom = false;
         checkRoom();
   
-            // closeRoom();
 
         return () => {
             console.log('here')
-            // socket.emit('leave', { name: 'bobBobberson', room: 'xyzk' });
-
-            // socket.off();
         };
 
     }, [ENDPOINT]);
@@ -58,7 +49,6 @@ export default function GamePage(props: { history: string[];}){
             });
 
             socket.on('message', message => {
-                // setMessages(messages => [...messages, message]);
                 receiveMsg(message);
             });
          
@@ -153,11 +143,8 @@ export default function GamePage(props: { history: string[];}){
                 console.log(deleteData)
             }
         }
-        window.location.href='/profile'+userName
+        window.location.href='/profile/'+userName
 
-        //     socket.emit('leave', { name: data.name, room: data.room  });
-
-    //     socket.off();
     }
   
 

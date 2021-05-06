@@ -1,5 +1,4 @@
-import os
-import datetime
+import os, datetime, boto3
 from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -13,6 +12,8 @@ from Models.User import userModel
 from Models.Campaign import campaignModel
 from Models.characterSheets import characterSheetModel
 from Models.Room import roomModel
+from Models.Character import characterModel
+from Models.Inventory import inventoryModel
 
 from Models.Item import itemModel
 from commands import create_tables
@@ -32,6 +33,7 @@ import random
 
 UPLOAD_FOLDER = './media'
 ALLOWED_EXTENSIONS = set({'pdf', 'png', 'jpg', 'jpeg'})
+S3_BUCKET = os.environ.get('S3_BUCKET')
 
 
 
@@ -49,8 +51,6 @@ def create_app():
 
     # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     #testing
-   
-
     db.init_app(app)
     
 
@@ -184,7 +184,6 @@ def createGame(current_user):
         body = request.get_json()
         name = body['name']
         dm_uid = current_user.publicId
-        # dm_uid =publicId body['dm_uid']
         description = body['description']
         if(description == ""):
             description = None
@@ -204,8 +203,7 @@ def createGame(current_user):
 @app.route("/api/getgames", methods=['GET'])
 @token_required
 def getGames(current_user):
-    if request.method == 'GET':        
-        # body = request.get_json()        
+    if request.method == 'GET':             
         allCamapaign = campaignModel.query.filter_by(dm_uid=current_user.publicId).all()
         result = []
         for row in allCamapaign:
@@ -236,25 +234,78 @@ def deleteGame(current_user):
 
         return make_response(jsonify("Success", 201))
 
+@app.route("/api/get-character", methods=['GET'])
+def getCharacter():
+    if request.method == 'GET': 
+        body = request.get_json()
+        getRoom = roomModel.query.filter_by(room= body['room'], password=body['password']).first()
+        if getRoom is None:
+            return jsonify({'error': "Error: Wrong room or password"}, 404)
+        user_uid = current_user.publicId
+        cmid = getRoom.cmid
+        checkCampaignCharacter = character.query.filter_by(campaign_cmid=cmid, user_uid=user_uid).first()
+        if checkCampaignCharacter is None:
+            response = {
+                    'status' : "Does not exist",
+                    'cmid': cmid
+                    }
+            return jsonify(response, 404)
+        response = {
+                    'status' : "Character exists",
+                    'cid': checkCampaignCharacter.cid
+                    }
+        return jsonify(response, 201)
+
+
+
+@app.route("/api/create-character", methods=['POST'])
+@token_required
+def createCharacter(current_user):
+    if request.method == 'POST': 
+        body = request.get_json()
+        cmid = 1
+        user_uid = current_user.publicId
+        cs_csid = body['csid']
+        new_character=characterModel(cmid, user_uid, cs_csid)
+        db.session.add(new_character)
+        db.session.commit()
+        items = body['inventoryList']
+        for i in items:
+            new_inventory = inventoryModel(new_character.cid, item['itid'])
+            db.session.add(new_inventory)
+        db.session.flush()
+        db.session.commit()
+
+        return make_response(jsonify("Character already exist", 200))
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+
 @app.route("/api/create-charactersheet", methods=['POST'])
-def createCharacterSheet():
+@token_required
+def createCharacterSheet(current_user):
     if request.method == 'POST':   
         file = request.files['characterSheet']
         if file and allowed_file(file.filename):
+            user_uid = current_user.publicId
             cs_path = str(uuid.uuid4())
             filename = file.filename
             date_created = datetime.datetime.now().replace(microsecond=0)
             date_updated = datetime.datetime.now().replace(microsecond=0)
-            destination="/characterSheets/".join([UPLOAD_FOLDER, cs_path])
-            file.save(destination)
-            new_characterSheet = characterSheetModel(cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
+            s3_client = boto3.client('s3')
+            upload_aws = s3_client.generate_presigned_post(app.config['S3_BUCKET'], cs_path,    Fields = {"acl": "public-read"}, Conditions = [{"acl": "public-read"}], ExpiresIn=3600)
+            new_characterSheet = characterSheetModel(user_id=user_uid, cs_path=cs_path, name=filename, date_created=date_created, date_updated=date_updated)
             db.session.add(new_characterSheet)
             db.session.commit()
-            return make_response(jsonify("Success", 201))
+            response = {
+                    'status' : "Success",
+                    'csid' : new_characterSheet.csid
+                    }
+            return make_response(jsonify(response), 201)
 
 @app.route("/api/create-room", methods=['POST'])
 @token_required
