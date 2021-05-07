@@ -323,7 +323,7 @@ def createCharacterSheet(current_user):
             db.session.commit()
         response = {
                 'status' : "Success",
-                'csid' : 23
+                'csid' : new_characterSheet.csid
                 }
         return jsonify(response), 201
     else:
