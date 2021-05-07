@@ -54,7 +54,7 @@ export default function Items({addInventoryList}: any){
                 <div> 
                     {/* e -> event that happens every time a char is input
                     e.target.value -> text in textbox */}
-                    <input type="text" value={q} onChange={(e) => setQ(e.target.value)}/>
+                    <input type="text" placeholder="Search for item" value={q} onChange={(e) => setQ(e.target.value)}/>
                     {
                         // Check columns filter
                         columns && columns.map((column : any) => <label>

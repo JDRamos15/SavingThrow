@@ -24,7 +24,7 @@ export default function JoinGame(props: { history: string[]; }){
             setServerErrors([]);
             
             const response = await fetch("api/get-character", {
-                method: "GET",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "x-Access-Token" : `${token}`
@@ -35,14 +35,12 @@ export default function JoinGame(props: { history: string[]; }){
                 })
             });
             const data = await response.json();
-            if(data['status'] == "Token is invalid!"){
-                window.location.href='/'
-            }
-            if(data['status'] == 'Does not exist'){
+            
+            if(data['status'] == "Does not exist"){
                 window.location.href="/charactersheet/"+data['cmid']
             }
             if(data['status'] == 'Character exists'){
-                const response = await fetch("api/join-room", {
+                const join_response = await fetch("api/join-room", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -53,16 +51,18 @@ export default function JoinGame(props: { history: string[]; }){
                         password: formData.password,
                     })
                 });
-                const data = await response.json();
-                if (data['status'] == "Success"){
-                    window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
+                const room_data = await join_response.json();
+                if (room_data['status'] == "Success"){
+                    window.location.href="/gamePage/room="+room_data['room']+"&code="+room_data['password']
                 }
                 else
                     setServerErrors([data['error']]);
             }
+            if(data['status'] == "Token is invalid!"){
+                window.location.href='/'
+            }
             else
-                    setServerErrors([data['error']]);
-
+                setServerErrors([data['error']]);
             setSubmitting(false);
         })}>
             {serverErrors ? (

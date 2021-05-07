@@ -1,3 +1,6 @@
 .submitButton {
     width: 60vw;
 }
+.minHeight {
+    min-height: 500px;
+}

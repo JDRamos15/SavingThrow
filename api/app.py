@@ -147,7 +147,10 @@ def createUser():
             uemail = body['email']
             upassword = generate_password_hash(body['password'], method='sha256')
             uusername = body['username']
-            user_description = body['description']
+            if(body['description'] == ''):
+                user_description = 'No description'
+            else:
+                user_description = body['description']
             new_user = userModel(publicId=str(uuid.uuid4()),ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername, user_description=user_description)
             db.session.add(new_user)
             db.session.commit()
@@ -254,27 +257,28 @@ def deleteGame(current_user):
     return jsonify({'error' : "Method is not DELETE"}), 404
 
 
-@app.route("/api/get-character", methods=['GET'])
-def getCharacter():
-    if request.method == 'GET': 
+@app.route("/api/get-character", methods=['PUT'])
+@token_required
+def getCharacter(current_user):
+    if request.method == 'PUT': 
         body = request.get_json()
-        getRoom = roomModel.query.filter_by(room= body['room'], password=body['password']).first()
+        getRoom = roomModel.query.filter_by(room= body['room'], rpassword=body['password']).first()
         if getRoom is None:
-            return jsonify({'error': "Error: Wrong room or password"}, 404)
+            return jsonify({'error': "Error: Wrong room or password"}), 404
         user_uid = current_user.publicId
         cmid = getRoom.cmid
-        checkCampaignCharacter = character.query.filter_by(campaign_cmid=cmid, user_uid=user_uid).first()
+        checkCampaignCharacter = characterModel.query.filter_by(campaign_cmid=cmid, user_uid=user_uid).first()
         if checkCampaignCharacter is None:
             response = {
                     'status' : "Does not exist",
                     'cmid': cmid
                     }
-            return jsonify(response, 404)
+            return jsonify(response), 404
         response = {
                     'status' : "Character exists",
                     'cid': checkCampaignCharacter.cid
                     }
-        return jsonify(response, 201)
+        return jsonify(response), 201
 
 
 
@@ -328,7 +332,7 @@ def createCharacterSheet(current_user):
             db.session.commit()
         response = {
                 'status' : "Success",
-                'csid' : 23
+                'csid' : new_characterSheet.csid
                 }
         return jsonify(response), 201
     else:
@@ -467,7 +471,7 @@ def checkRoom(current_user):
                         }), 200
         else:
             return jsonify({
-                'error': "Room does not exist"
+                'error': "Incorrect room or password"
             }), 400
     return jsonify({'error' : "Method is not GET"}), 404
 
@@ -524,4 +528,3 @@ def itemSearch():
 if __name__ == '__main__':
     socketio.run(app)
     # app.run()
-

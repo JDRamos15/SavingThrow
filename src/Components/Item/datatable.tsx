@@ -4,7 +4,6 @@ export default function Datatable({ data, addList } : any){
 
 
     const columns = [ "name", "effect", "description", "damage"]
-
     return(
         <table className="table-border" cellPadding={1} cellSpacing={1}> 
             <thead className="table-border">

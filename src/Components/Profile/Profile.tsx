@@ -141,31 +141,32 @@ export default function Profile(props: { history: any[]; }) {
     const response = await fetch('/api/getgames', {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "x-Access-Token": `${token}`
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
 
       },
     });
     const data = await response.json();
 
-    if (data['status'] == "Token is invalid!") {
+    if(data['status'] == "Token is invalid!"){
       logout();
-      window.location.href = '/'
+      window.location.href='/'
 
     }
-    if (data['status'] == "Success") {
-      setAllGames(data['games']);
+    if(data['status'] == "Success"){
+        setAllGames(data['games']);
     }
 
 
   }
 
   async function createRoom(id_: number, password_: string) {
+    await deleteOldRooms()
     const response = await fetch('/api/create-room', {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "x-Access-Token": `${token}`
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
 
       },
       body: JSON.stringify({
@@ -175,15 +176,28 @@ export default function Profile(props: { history: any[]; }) {
     });
     const data = await response.json();
 
-    if (data['status'] == "Success") {
-      window.location.href = "/gamePage/room=" + data['room'] + "&code=" + data['password']
+    if(data['status'] == "Success"){
+      window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
     }
-
-    if (data['status'] == "Token is invalid!") {
+    
+    if(data['status'] == "Token is invalid!"){
       logout();
-      window.location.href = '/'
+      window.location.href='/'
     }
 
+
+  }
+
+  async function deleteOldRooms() {
+    const response = await fetch('/api/delete-room', {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
+
+      },
+    });
+    const data = await response.json();
 
   }
 
@@ -192,8 +206,8 @@ export default function Profile(props: { history: any[]; }) {
     const response = await fetch('/api/delete-game', {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
-        "x-Access-Token": `${token}`
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
 
       },
       body: JSON.stringify({
@@ -204,11 +218,11 @@ export default function Profile(props: { history: any[]; }) {
     const data = await response.json();
     console.log(data);
 
-    if (data['status'] == "Token is invalid!") {
+    if(data['status'] == "Token is invalid!"){
       logout();
     }
-    if (data['status'] == "Success") {
-      window.location.href = "/profile/" + getUsername()
+    if(data['status'] == "Success"){
+      window.location.href="/profile/"+getUsername()
     }
 
 
@@ -347,7 +361,7 @@ export default function Profile(props: { history: any[]; }) {
                             <Typography>{game['password']}</Typography>
                             <Box component="span" m={1} className={classes.box}>
 
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password']) }}>
+                            <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
                                 Play
                               </Button>
                               <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteCampaign(game['cmid'], game['password']) }}>
