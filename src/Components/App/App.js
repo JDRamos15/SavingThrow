@@ -10,6 +10,7 @@ import CharacterSheet from "../CharacterSheet/CharacterSheet"
 import GamePage from "../GamePage/GamePage"
 import Profile from "../Profile/Profile"
 import JoinGame from "../Join/JoinGame"
+import { isLogged } from '../../Services/authentication';
 
 
 function App() {
@@ -20,14 +21,13 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/create-user" component={CreateUser} />
-          <Route exact path="/create-game" component={CreateGame} />
+          <Route exact path="/create-game" render={props => (isLogged() !== false ? (<CreateGame />) : (<Redirect to={{ pathname: "/Login" }} />))}/>
           <Route exact path="/login" component={Login} />
           <Route exact path="/profile/:username" component={Profile} />
-          <Route exact path="/charactersheet/:cmid" component={CharacterSheet} />
+          <Route exact path="/charactersheet/:cmid" render={props => (isLogged() !== false ? (<CharacterSheet />) : (<Redirect to={{ pathname: "/Login" }} />))} />
           <Route exact path="/gamePage/room=:room&code=:code" component={GamePage} />
-          <Route exact path="/joinGame" component={JoinGame} />
+          <Route exact path="/joinGame" render={props => (isLogged() !== false ? (<JoinGame />) : (<Redirect to={{ pathname: "/Login" }} />))} />
           <Redirect to="/" />
-     
         </Switch>
       </Router>
     </React.Fragment>

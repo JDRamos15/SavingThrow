@@ -101,6 +101,7 @@ def index():
     return app.send_static_file('index.html')
 
 
+
 @app.route("/api/login", methods=['POST'])
 def login():
     if request.method == 'POST':
@@ -146,7 +147,8 @@ def createUser():
             uemail = body['email']
             upassword = generate_password_hash(body['password'], method='sha256')
             uusername = body['username']
-            new_user = userModel(publicId=str(uuid.uuid4()),ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername)
+            user_description = body['description']
+            new_user = userModel(publicId=str(uuid.uuid4()),ufirst_name=ufirst_name, ulast_name=ulast_name, uemail= uemail, upassword= upassword, uusername= uusername, user_description=user_description)
             db.session.add(new_user)
             db.session.commit()
     
@@ -170,14 +172,16 @@ def getUser(current_user):
         if checkPublicId is None:
             return jsonify({'status' : "User does not exist"})
         else:
-            return jsonify({
+            response = {
                     'status' : "Success",
                     'username' : checkPublicId.uusername,
                     'user_id' : checkPublicId.uid,
                     'public_id' : checkPublicId.publicId,
                     'fname': checkPublicId.ufirst_name,
-                    'lname': checkPublicId.ulast_name
-                    }), 200
+                    'lname': checkPublicId.ulast_name,
+                    'description': checkPublicId.user_description
+                    }    
+            return jsonify(response), 200
     return jsonify({'error' : "Method is not POST"}), 404
 
 
@@ -240,7 +244,9 @@ def getGames(current_user):
 def deleteGame(current_user):
     if request.method == 'DELETE':        
         body = request.get_json()
+        charactersToDelete = characterModel.query.filter_by(campaign_cmid=body['cmid']).first()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid'], password=body['rpassword']).first()
+        db.session.delete(charactersToDelete)
         db.session.delete(campaignToDelete)
         db.session.commit()
 
@@ -516,6 +522,6 @@ def itemSearch():
 
 
 if __name__ == '__main__':
-    # socketio.run(app)
-    app.run()
+    socketio.run(app)
+    # app.run()
 
