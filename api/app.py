@@ -248,7 +248,7 @@ def deleteGame(current_user):
     if request.method == 'DELETE':        
         body = request.get_json()
         charactersToDelete = characterModel.query.filter_by(campaign_cmid=body['cmid']).first()
-        inventoryToDelete = inventoryModel.qury.filter_by(cid=characterToDelete.cid).first()
+        inventoryToDelete = inventoryModel.query.filter_by(cid=characterToDelete.cid).first()
         campaignToDelete = campaignModel.query.filter_by(cmid=body['cmid'], password=body['rpassword']).first()
         db.session.delete(inventoryToDelete)
         db.session.delete(charactersToDelete)
