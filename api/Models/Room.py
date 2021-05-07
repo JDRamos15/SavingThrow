@@ -1,6 +1,6 @@
 # Accept current change
-# from api.extension import db
-from extension import db
+from api.extension import db
+# from extension import db
  
 class roomModel(db.Model):
     __tablename__ = 'rooms'
