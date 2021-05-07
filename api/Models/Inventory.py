@@ -1,5 +1,5 @@
-# from api.extension import db
-from extension import db
+from api.extension import db
+# from extension import db
  
 class inventoryModel(db.Model):
     __tablename__ = 'inventory'

@@ -37,12 +37,11 @@ export default function CreateGame(props: { history: string[]; }) {
             body: JSON.stringify({
                 name: formData.name,
                 description: formData.description,
-                // dm_uid: 1,
                 looking_for: isEnabled,
                 start_date: formData.start_date,
                 password: formData.password,
                 capacity: formData.capacity,
-            })                // dm_uid: 1,
+            })                
 
         });
         const data = await response.json();

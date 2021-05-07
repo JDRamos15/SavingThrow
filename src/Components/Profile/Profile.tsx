@@ -1,8 +1,8 @@
 //import ReCAPTCHA from "react-google-recaptcha";
 import "./Profile.css";
-import React, {useEffect} from 'react';
-import {Link, useParams} from "react-router-dom";
-import {isLogged,getUsername,getToken, logout} from "../../Services/authentication";
+import React, { useEffect } from 'react';
+import { Link, useParams } from "react-router-dom";
+import { isLogged, getUsername, getToken, logout } from "../../Services/authentication";
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       overflow: 'hidden',
       padding: theme.spacing(0, 3),
-      
+
     },
-    cardroot:{
+    cardroot: {
       maxWidth: 'auto',
       margin: 'auto',
     },
@@ -81,254 +81,260 @@ interface ParamTypes {
 
 
 
-export default function Profile(props: { history: any[]; }){
-    const token = getToken();
-    const classes = useStyles();
-    const [expandedId, setExpandedId] = React.useState(-1);   
-    const [expandedFriendId, setExpandedFriendId] = React.useState(-1);
-    const [userProfile, setUserProfile] = React.useState({
-      data: {
-        username: "",
-        uid: 0,
-        public_id: 0,
-        fname: "",
-        lname: "",
-      },
-      rendered: false
+export default function Profile(props: { history: any[]; }) {
+  const token = getToken();
+  const classes = useStyles();
+  const [expandedId, setExpandedId] = React.useState(-1);
+  const [expandedFriendId, setExpandedFriendId] = React.useState(-1);
+  const [userProfile, setUserProfile] = React.useState({
+    data: {
+      username: "",
+      uid: 0,
+      public_id: 0,
+      fname: "",
+      lname: "",
+      description: "",
+    },
+    rendered: false
+  });
+  const [allGames, setAllGames] = React.useState([]);
+  let { username } = useParams<ParamTypes>();
+
+
+  async function getUser() {
+    const response = await fetch('/api/user', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-Access-Token": `${token}`
+
+      }
     });
-    const [allGames, setAllGames] = React.useState([]);
-    let {username} = useParams<ParamTypes>();
-
-
-    async function getUser() {
-      const response = await fetch('/api/user', {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
-
-        }
-      });
-      const users = await response.json();
-      if(users['status'] == "Token is invalid!"){
-        logout();
-        window.location.href='/'
-      }
-      else{
-        if(users['username'] != username){
-          window.location.href="/profile/"+users['username']
-        }
-        setUserProfile({
-          data: {
-            username: users['username'],
-            uid: users['uid'],
-            public_id: users['publicId'],
-            fname: users['fname'],
-            lname: users['lname'],
-          },
-          rendered: true
-        });
-      }
-
-
+    const users = await response.json();
+    if (users['status'] == "Token is invalid!") {
+      logout();
+      window.location.href = '/'
     }
-
-    async function getAllCampaigns() {
-      const response = await fetch('/api/getgames', {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
+    else {
+      if (users['username'] != username) {
+        window.location.href = "/profile/" + users['username']
+      }
+      setUserProfile({
+        data: {
+          username: users['username'],
+          uid: users['uid'],
+          public_id: users['publicId'],
+          fname: users['fname'],
+          lname: users['lname'],
+          description: users['description']
 
         },
+        rendered: true
       });
-      const data = await response.json();
-
-      if(data['status'] == "Token is invalid!"){
-        logout();
-        window.location.href='/'
-
-      }
-      if(data['status'] == "Success"){
-          setAllGames(data['games']);
-      }
-
-
-    }
-
-    async function createRoom(id_: number, password_: string) {
-      await deleteOldRooms()
-      const response = await fetch('/api/create-room', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
-
-        },
-        body: JSON.stringify({
-          rpassword: password_,
-          cmid: id_
-        })
-      });
-      const data = await response.json();
-
-      if(data['status'] == "Success"){
-        window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
-      }
-      
-      if(data['status'] == "Token is invalid!"){
-        logout();
-        window.location.href='/'
-      }
-
-
-    }
-
-    async function deleteOldRooms() {
-      const response = await fetch('/api/delete-room', {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
-
-        },
-      });
-      const data = await response.json();
-
+      console.log(userProfile)
     }
 
 
-    async function deleteCampaign(id_: number, password_: string) {
-      const response = await fetch('/api/delete-game', {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "x-Access-Token" : `${token}`
+  }
 
-        },
-        body: JSON.stringify({
-          rpassword: password_,
-          cmid: id_
-        })
-      });
-      const data = await response.json();
-      console.log(data);
+  async function getAllCampaigns() {
+    const response = await fetch('/api/getgames', {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
 
-      if(data['status'] == "Token is invalid!"){
-        logout();
-      }
-      if(data['status'] == "Success"){
-        window.location.href="/profile/"+getUsername()
-      }
+      },
+    });
+    const data = await response.json();
 
+    if(data['status'] == "Token is invalid!"){
+      logout();
+      window.location.href='/'
 
+    }
+    if(data['status'] == "Success"){
+        setAllGames(data['games']);
     }
 
 
+  }
 
-    useEffect(() => {
-      if(!userProfile.rendered){
-        getUser();
-      }
-    },[]);
+  async function createRoom(id_: number, password_: string) {
+    await deleteOldRooms()
+    const response = await fetch('/api/create-room', {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
 
-    useEffect(() => {
-      getAllCampaigns();
-    },[]);
+      },
+      body: JSON.stringify({
+        rpassword: password_,
+        cmid: id_
+      })
+    });
+    const data = await response.json();
+
+    if(data['status'] == "Success"){
+      window.location.href="/gamePage/room="+data['room']+"&code="+data['password']
+    }
+    
+    if(data['status'] == "Token is invalid!"){
+      logout();
+      window.location.href='/'
+    }
 
 
-    const games = [{ _id: "1" }, { _id: "2" }, { _id: "3" }];
-    const friends = [{ _id: "1", name : "Carlos" }, { _id: "2", name : "Miguel" }, { _id: "3", name : "Amanda" }];
+  }
+
+  async function deleteOldRooms() {
+    const response = await fetch('/api/delete-room', {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
+
+      },
+    });
+    const data = await response.json();
+
+  }
 
 
-    const handleExpandClick = (i: number) => {
-      setExpandedId(expandedId === i ? -1 : i);
-    };
-    const handleExpandClickFriend = (i: number) => {
-      setExpandedFriendId(expandedFriendId === i ? -1 : i);
-    };
+  async function deleteCampaign(id_: number, password_: string) {
+    const response = await fetch('/api/delete-game', {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json",
+          "x-Access-Token" : `${token}`
+
+      },
+      body: JSON.stringify({
+        rpassword: password_,
+        cmid: id_
+      })
+    });
+    const data = await response.json();
+    console.log(data);
+
+    if(data['status'] == "Token is invalid!"){
+      logout();
+    }
+    if(data['status'] == "Success"){
+      window.location.href="/profile/"+getUsername()
+    }
 
 
-    if(allGames.length == 0){
-      return (
-        <div className={classes.root}>
-          <Typography variant="h4" gutterBottom>
-            {userProfile.data.fname}
-          </Typography>
-          <Grid container spacing={1} justify="center" alignItems='center'>
-            <Grid item xs={4}>
-              <Paper className={classes.paper}>
+  }
+
+
+
+  useEffect(() => {
+    if (!userProfile.rendered) {
+      getUser();
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllCampaigns();
+  }, []);
+
+
+  const games = [{ _id: "1" }, { _id: "2" }, { _id: "3" }];
+  const friends = [{ _id: "1", name: "Carlos" }, { _id: "2", name: "Miguel" }, { _id: "3", name: "Amanda" }];
+
+
+  const handleExpandClick = (i: number) => {
+    setExpandedId(expandedId === i ? -1 : i);
+  };
+  const handleExpandClickFriend = (i: number) => {
+    setExpandedFriendId(expandedFriendId === i ? -1 : i);
+  };
+
+
+  if (allGames.length == 0) {
+    return (
+      <div className={classes.root}>
+        <Typography variant="h4" gutterBottom>
+          {userProfile.data.fname}
+        </Typography>
+        <Grid container spacing={1} justify="center" alignItems='center'>
+          <Grid item xs={4}>
+            <Paper className={classes.paper}>
               Games
                 <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item xs>
-                    <Typography component={'span'}>
-                      No Games     
+                <Grid item xs>
+                  <Typography component={'span'}>
+                    No Games
                     </Typography>
-                    <Box component="span" m={1} className={classes.box}>
-                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
-                          Add
+                  <Box component="span" m={1} className={classes.box}>
+                    <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
+                      Add
                         </Button>
-                    </Box>
-                  </Grid>
+                  </Box>
                 </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={4}>
-              <Paper className={classes.paper}>
-                Friends
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Paper className={classes.paper}>
+              Friends
                 <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item xs>
-                    <Typography component={'span'}>
-                      No Friends     
+                <Grid item xs>
+                  <Typography component={'span'}>
+                    No Friends
                     </Typography>
-                    <Box component="span" m={1} className={classes.box}>
+                  {/* <Box component="span" m={1} className={classes.box}>
                         <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} >
                           Add
                         </Button>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-          
-              <Grid item xs={4}>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                    User Description
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      Character List
-                    </Paper>
-                  </Grid>
+                    </Box> */}
                 </Grid>
               </Grid>
-            
-          
+            </Paper>
           </Grid>
-          <Divider className={classes.divider} />
-          
-        </div>
-        
-      )
 
-    }
-    else{
-      return (
-        <div className={classes.root}>
-          <Typography variant="h4" gutterBottom>
-            {userProfile.data.fname}
-          </Typography>
-          <Grid container spacing={1} justify="center" alignItems='center'>
-            <Grid item xs={4}>
-              <Paper className={classes.paper}>
+          <Grid item xs={4}>
+            <Grid container>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <h6>User Description</h6>
+                  <p>{userProfile.data.description}</p>
+                </Paper>
+
+              </Grid>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  Character List
+                    </Paper>
+              </Grid>
+            </Grid>
+          </Grid>
+
+
+        </Grid>
+        <Divider className={classes.divider} />
+
+      </div>
+
+    )
+
+  }
+  else {
+    return (
+      <div className={classes.root}>
+        <Typography variant="h4" gutterBottom>
+          {userProfile.data.fname}
+        </Typography>
+        <Grid container spacing={1} justify="center" alignItems='center'>
+          <Grid item xs={4}>
+            <Paper className={classes.paper}>
               Games
                 <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item xs>
-                    <Typography component={'span'}>
-  
+                <Grid item xs>
+                  <Typography component={'span'}>
+
                     {allGames.map((game, i) => (
                       <Card className={classes.cardroot} key={game['cmid']}>
                         {game['cname']}
@@ -351,14 +357,14 @@ export default function Profile(props: { history: any[]; }){
                             <Typography paragraph>
                               {game['cdescription']}
                             </Typography>
-                            <Typography>Entry Code</Typography> 
+                            <Typography>Entry Code</Typography>
                             <Typography>{game['password']}</Typography>
                             <Box component="span" m={1} className={classes.box}>
-              
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
+
+                            <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { createRoom(game['cmid'], game['password'])}}>                      
                                 Play
                               </Button>
-                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteCampaign(game['cmid'], game['password'])}}>                      
+                              <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} onClick={() => { deleteCampaign(game['cmid'], game['password']) }}>
                                 Delete
                               </Button>
                             </Box>
@@ -366,20 +372,35 @@ export default function Profile(props: { history: any[]; }){
                         </Collapse>
                       </Card>
                     ))}
-                      <Box component="span" m={1} className={classes.box}>
-                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
+                    <Box component="span" m={1} className={classes.box}>
+                      <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} href="/create-game" >
+                        Add
+                        </Button>
+                    </Box>
+
+
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Paper className={classes.paper}>
+              Friends
+                <Grid container wrap="nowrap" spacing={2}>
+                <Grid item xs>
+                  <Typography component={'span'}>
+                    No Friends to display
+                    </Typography>
+                  {/* <Box component="span" m={1} className={classes.box}>
+                        <Button variant="contained" color="secondary" style={{ borderRadius: 20 }} >
                           Add
                         </Button>
-                      </Box>
-                      
-                      
-                    </Typography>
-                  </Grid>
+                    </Box> */}
                 </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={4}>
-              <Paper className={classes.paper}>
+              </Grid>
+            </Paper>
+            {/* <Paper className={classes.paper}>
                 Friends
   
                   {friends.map((friend, i) => (
@@ -401,6 +422,7 @@ export default function Profile(props: { history: any[]; }){
                           <Collapse in={expandedFriendId === i} timeout="auto" unmountOnExit>
                             <CardContent>
                               <div>Description:</div>
+                              
                             </CardContent>
                           </Collapse>
                         </Card>
@@ -410,31 +432,31 @@ export default function Profile(props: { history: any[]; }){
                         Add
                       </Button>
                     </Box>
-              </Paper>
-            </Grid>
-          
-              <Grid item xs={4}>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                    User Description
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      Character List
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </Grid>
-            
-          
+              </Paper> */}
           </Grid>
-          <Divider className={classes.divider} />
-          
-        </div>
-        
-      )
-    }
+
+          <Grid item xs={4}>
+            <Grid container>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <h6>User Description</h6>
+                  <p>{userProfile.data.description}</p>
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  Character List
+                    </Paper>
+              </Grid>
+            </Grid>
+          </Grid>
+
+
+        </Grid>
+        <Divider className={classes.divider} />
+
+      </div>
+
+    )
   }
-   
+}
