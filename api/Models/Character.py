@@ -10,13 +10,14 @@ class characterModel(db.Model):
     user_uid = db.Column(db.Integer)
     cs_csid = db.Column(db.Integer)
  
-    def __init__(self, campaign_cmid, user_uid, cs_csid):
+    def __init__(self, cid, campaign_cmid, user_uid, cs_csid):
+        self.cid = cid
         self.campaign_cmid = campaign_cmid
         self.user_uid = user_uid
         self.cs_csid = cs_csid 
 
     def __repr__(self):
-        return f'Character("{self.campaign_cmid}","{self.user_uid}","{self.cs_csid}")'
+        return f'Character("{self.cid}","{self.campaign_cmid}","{self.user_uid}","{self.cs_csid}")'
     
     # def serialize(self):
     #     return {
