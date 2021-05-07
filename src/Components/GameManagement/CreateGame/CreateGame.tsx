@@ -46,7 +46,7 @@ export default function CreateGame(props: { history: string[]; }) {
         });
         const data = await response.json();
         if (data['status'] == "Success"){
-            window.location.href = '/charactersheet/'+data['cmid']
+            window.location.href = '/charactersheet/'+data['cmid'];
         }
         else{
             window.location.href='/'
